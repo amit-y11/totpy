@@ -19,7 +19,7 @@ jobs:
       - run: npm test
       - run: npm run format:check
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: extension
           path: dist/
