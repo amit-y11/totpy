@@ -9,6 +9,12 @@ updates:
         dependency-type: development
     commit-message:
       prefix: chore
+    ignore:
+      # Keep Node types matched to the Node version we run on (see package.json engines and
+      # CI), so code can't type-check against APIs that don't exist at runtime. Bump this
+      # together with the Node version.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
