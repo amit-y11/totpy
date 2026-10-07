@@ -1,0 +1,57 @@
+{
+  "name": "totpy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Open-source 2FA authenticator for Chrome with end-to-end encrypted sync.",
+  "keywords": [
+    "2fa",
+    "totp",
+    "authenticator",
+    "chrome-extension",
+    "otp",
+    "mfa",
+    "two-factor"
+  ],
+  "homepage": "https://github.com/amit-y11/totpy",
+  "bugs": {
+    "url": "https://github.com/amit-y11/totpy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amit-y11/totpy.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "dev": "node scripts/build.ts --watch",
+    "typecheck": "tsc",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "check": "npm run typecheck && npm test && npm run format:check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "icons": "python3 scripts/make-icons.py",
+    "package": "node scripts/package.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,html,css,md,yml,yaml}": "prettier --write"
+  },
+  "dependencies": {
+    "jsqr": "1.4.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "@types/chrome": "0.3.4",
+    "@types/node": "24.19.1",
+    "esbuild": "0.28.2",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "prettier": "3.9.9",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Totpy · Settings</title>
+    <link rel="stylesheet" href="../ui/common.css" />
+    <link rel="stylesheet" href="options.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body>
+    <main>
+      <header class="page-header">
+        <img src="../icons/icon-128.png" alt="" width="36" height="36" />
+        <div>
+          <h1>Totpy</h1>
+          <p class="muted">Settings</p>
+        </div>
+      </header>
+
+      <div id="view-loading" class="center"><div class="spinner"></div></div>
+
+      <!-- No vault on this device yet -->
+      <section id="view-empty" hidden>
+        <div class="card stack">
+          <div>
+            <h2>Restore from Google Drive</h2>
+            <p class="muted">
+              Set up this device from a vault you already back up to Google Drive. To start fresh,
+              open the extension from the toolbar instead.
+            </p>
+          </div>
+          <p id="drive-unavailable" class="hint" hidden></p>
+          <button id="drive-restore-connect" class="primary self-start" type="button">
+            Connect Google Drive
+          </button>
+          <form id="drive-restore-form" class="stack" hidden>
+            <label
+              >Master password
+              <input type="password" name="password" autocomplete="current-password" required
+            /></label>
+            <p class="error" role="alert"></p>
+            <div class="row">
+              <button class="primary" type="submit">Restore vault</button>
+              <button id="drive-forgot" class="link" type="button">Forgot password?</button>
+            </div>
+          </form>
+          <form id="drive-recover-form" class="stack" hidden>
+            <label
+              >Recovery code
+              <input name="code" class="mono" autocomplete="off" spellcheck="false" required
+            /></label>
+            <label
+              >New master password
+              <input
+                type="password"
+                name="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            /></label>
+            <label
+              >Confirm new password
+              <input
+                type="password"
+                name="confirm"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            /></label>
+            <p class="error" role="alert"></p>
+            <button class="primary self-start" type="submit">Reset password and restore</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-unlock" hidden>
+        <form id="unlock-form" class="card stack narrow">
+          <h2>Unlock to change settings</h2>
+          <input
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            placeholder="Master password"
+            aria-label="Master password"
+            required
+          />
+          <p class="error" role="alert"></p>
+          <button class="primary self-start" type="submit">Unlock</button>
+          <p class="hint">
+            Forgot your password? Open the extension from the toolbar and choose “Forgot password?”
+            to reset it with your recovery code.
+          </p>
+        </form>
+      </section>
+
+      <section id="view-main" hidden>
+        <h3 class="section-title">Sync</h3>
+        <p class="section-desc muted">
+          Your vault is encrypted with your master password before it leaves this device. Sync
+          providers only ever store ciphertext.
+        </p>
+        <div id="providers" class="stack"></div>
+
+        <h3 class="section-title">Security</h3>
+        <div class="card list">
+          <div class="item">
+            <div>
+              <div class="item-title">Auto-lock</div>
+              <div class="hint">
+                Locks the vault after this much time. It also locks when Chrome closes.
+              </div>
+            </div>
+            <select id="auto-lock" class="compact">
+              <option value="1">1 minute</option>
+              <option value="5">5 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="60">1 hour</option>
+              <option value="240">4 hours</option>
+              <option value="0">Never</option>
+            </select>
+          </div>
+          <details class="item block">
+            <summary class="item-title">Change master password</summary>
+            <form id="password-form" class="stack">
+              <label
+                >Current password
+                <input type="password" name="current" autocomplete="current-password" required
+              /></label>
+              <label
+                >New password
+                <input
+                  type="password"
+                  name="next"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+              /></label>
+              <label
+                >Confirm new password
+                <input
+                  type="password"
+                  name="confirm"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+              /></label>
+              <p class="hint">
+                Your other devices switch to the new password the next time they sync.
+              </p>
+              <p class="error" role="alert"></p>
+              <button class="primary self-start" type="submit">Change password</button>
+            </form>
+          </details>
+          <div class="item block">
+            <div class="row">
+              <div class="spacer">
+                <div class="item-title">Recovery code</div>
+                <div class="hint">
+                  Resets your master password if you forget it. Creating a new one makes the old
+                  code stop working.
+                </div>
+              </div>
+              <button id="new-recovery" type="button">Create new code</button>
+            </div>
+            <div id="recovery-panel" class="callout stack" hidden>
+              <p>Save this code somewhere outside this browser. It will not be shown again.</p>
+              <output id="recovery-code" class="recovery-code"></output>
+              <div class="row">
+                <button id="recovery-copy" type="button">Copy</button>
+                <button id="recovery-download" type="button">Download</button>
+                <span class="spacer"></span>
+                <button id="recovery-hide" class="link" type="button">Done</button>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-title">Lock now</div>
+            <button id="lock-now" type="button">Lock</button>
+          </div>
+        </div>
+
+        <h3 class="section-title">Backup</h3>
+        <div class="card list">
+          <details id="auto-backups" class="item block">
+            <summary class="item-title">Automatic copies</summary>
+            <p class="hint">
+              A copy is kept once a day, for the last 7 days. Restoring only adds back accounts that
+              are missing now. Nothing else changes.
+            </p>
+            <ul id="backup-list" class="backup-list"></ul>
+          </details>
+          <div class="item">
+            <div>
+              <div class="item-title">Export encrypted backup</div>
+              <div class="hint">A JSON file you can only open with your master password.</div>
+            </div>
+            <button id="export-encrypted" type="button">Export</button>
+          </div>
+          <details class="item block">
+            <summary class="item-title">Import encrypted backup</summary>
+            <form id="import-encrypted-form" class="stack">
+              <input type="file" name="file" accept="application/json,.json" required />
+              <label
+                >Password for that backup
+                <input type="password" name="password" autocomplete="off" required
+              /></label>
+              <p class="error" role="alert"></p>
+              <button class="primary self-start" type="submit">Import</button>
+            </form>
+          </details>
+          <details class="item block">
+            <summary class="item-title">Import links</summary>
+            <form id="import-uri-form" class="stack">
+              <textarea
+                name="uris"
+                rows="5"
+                placeholder="One otpauth://totp/… or Google Authenticator otpauth-migration://… link per line"
+                required
+              ></textarea>
+              <p class="error" role="alert"></p>
+              <button class="primary self-start" type="submit">Import</button>
+            </form>
+          </details>
+          <div class="item">
+            <div>
+              <div class="item-title">Export as plain text</div>
+              <div class="hint">
+                Unencrypted otpauth:// links for moving to another app. Delete the file afterwards.
+              </div>
+            </div>
+            <button id="export-plain" class="danger" type="button">Export</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="muted">
+        <span id="version"></span> ·
+        <a href="https://github.com/amit-y11/totpy" target="_blank" rel="noopener">Source code</a>
+        · MIT License
+      </footer>
+    </main>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

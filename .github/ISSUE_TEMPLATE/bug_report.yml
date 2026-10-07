@@ -1,0 +1,55 @@
+name: Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Found a security problem?** Don't file it here; follow [SECURITY.md](https://github.com/amit-y11/totpy/blob/main/SECURITY.md).
+        Never paste secret keys, recovery codes or `otpauth://` links in an issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the popup
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: input
+    id: totpy-version
+    attributes:
+      label: Totpy version
+      description: Shown at the bottom of the settings page.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 154 on macOS 15
+    validations:
+      required: true
+  - type: dropdown
+    id: sync
+    attributes:
+      label: Sync providers turned on
+      multiple: true
+      options:
+        - None
+        - Chrome sync
+        - Google Drive
+  - type: textarea
+    id: logs
+    attributes:
+      label: Errors or screenshots
+      description: Errors from the extension's service worker console (chrome://extensions → Totpy → "service worker") help a lot. Blur any codes or account names.
