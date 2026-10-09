@@ -126,14 +126,17 @@ newer.
 
 ## Sync across devices
 
-| Provider     | Setup                                   | Capacity              | Notes                    |
-| ------------ | --------------------------------------- | --------------------- | ------------------------ |
-| Chrome sync  | None                                    | Several hundred codes | Uses your Chrome profile |
-| Google Drive | [OAuth client ID](docs/google-drive.md) | Unlimited             | Drive keeps old versions |
+| Provider     | Setup               | Capacity              | Notes                    |
+| ------------ | ------------------- | --------------------- | ------------------------ |
+| Chrome sync  | None                | Several hundred codes | Uses your Chrome profile |
+| Google Drive | Sign in with Google | Unlimited             | Drive keeps old versions |
 
 Turn providers on in **Settings → Sync**. Both store the same encrypted file, and every device
 merges changes automatically: new accounts, edits and deletions from all devices are combined,
 and the newest edit wins.
+
+Google Drive sign-in is tied to the Chrome Web Store version. If you load Totpy unpacked from a
+release zip or from source, set up your own [OAuth client ID](docs/google-drive.md) to use Drive.
 
 - **New device with Chrome sync:** install Totpy in a Chrome profile signed in to the same Google
   account. It finds your vault and asks for your master password.

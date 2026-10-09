@@ -5,6 +5,11 @@ extension's ID. Whoever publishes a build sets this up once; people who install 
 just click **Connect Google Drive**. Without a client ID, the Drive option is shown as
 unavailable and everything else works.
 
+The manifest already contains the client ID for the Chrome Web Store version (item ID
+`hhhkbhfahgcieokmgibiapncicnpcing`). Google only accepts it from that extension ID, so if you
+load Totpy unpacked or publish your own build, replace it with your own client ID as described
+below.
+
 Totpy uses the `drive.appdata` scope. It can only see a hidden folder that Totpy creates, never
 your other Drive files.
 

@@ -6,6 +6,8 @@ All notable changes to Totpy are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-09
+
 ### Added
 
 - The [totpy.org](https://totpy.org) website, with the privacy policy at totpy.org/privacy
@@ -13,6 +15,8 @@ All notable changes to Totpy are documented here. The format follows
 ### Changed
 
 - The extension's homepage link now points to totpy.org
+- Google Drive sync works out of the box in the Chrome Web Store version, which now ships
+  with Totpy's Google OAuth client ID
 
 ## [1.0.0] - 2026-10-08
 
@@ -33,5 +37,6 @@ First public release.
 - Auto-lock and a clock-drift warning
 - Light and dark themes
 
-[Unreleased]: https://github.com/amit-y11/totpy/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/amit-y11/totpy/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/amit-y11/totpy/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/amit-y11/totpy/releases/tag/v1.0.0
