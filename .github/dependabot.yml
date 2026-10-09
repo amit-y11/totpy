@@ -25,6 +25,11 @@ updates:
     commit-message:
       prefix: chore
       include: scope
+    ignore:
+      # @astrojs/check (used by `astro check` in the build) only supports TypeScript 5 and 6.
+      # Remove this once it accepts TypeScript 7.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
