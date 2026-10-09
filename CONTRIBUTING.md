@@ -78,13 +78,24 @@ docs/                    design docs and images
 ## Website
 
 The [totpy.org](https://totpy.org) website lives in `site/` and is built with
-[Astro](https://astro.build). It deploys to GitHub Pages automatically when `main` changes.
+[Astro](https://astro.build). It is hosted on Cloudflare Workers (static assets only, no server
+code) and deploys automatically when `main` changes.
 
 ```bash
 cd site && npm install && npm run dev
 ```
 
-The privacy page renders the repository's `PRIVACY.md`, so edit the policy there.
+| Command           | What it does                                                        |
+| ----------------- | ------------------------------------------------------------------- |
+| `npm run dev`     | Astro dev server with hot reload                                    |
+| `npm run build`   | Type-checks, builds `dist/` and writes `dist/_headers`              |
+| `npm run preview` | Builds and serves it on Cloudflare's local runtime, with headers    |
+| `npm run deploy`  | Builds and deploys to Cloudflare (needs `npx wrangler login` first) |
+
+- The privacy page renders the repository's `PRIVACY.md`, so edit the policy there.
+- `scripts/headers.mjs` generates a strict Content-Security-Policy after every build. Keep
+  scripts in `src/scripts/`; inline scripts are allowed only by hash, and third-party scripts
+  are blocked.
 
 ## Guidelines
 

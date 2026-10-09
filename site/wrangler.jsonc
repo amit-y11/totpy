@@ -1,0 +1,18 @@
+// Cloudflare Workers static assets: totpy.org is served straight from
+// Cloudflare's edge. There is no server code; `dist/` is the whole site.
+// Deploy with `npm run deploy` (after `npx wrangler login`) or via CI.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "totpy-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+  },
+  // Creates the DNS record and HTTPS certificate for totpy.org on deploy.
+  "routes": [{ "pattern": "totpy.org", "custom_domain": true }],
+  // Only serve the site on totpy.org, not on a *.workers.dev address.
+  "workers_dev": false,
+  "preview_urls": false,
+}

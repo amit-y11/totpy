@@ -3,16 +3,28 @@ name: Website
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'PRIVACY.md', '.github/workflows/site.yml']
+    paths:
+      - 'site/**'
+      - 'PRIVACY.md'
+      - 'src/lib/totp.ts'
+      - 'src/lib/base32.ts'
+      - 'src/lib/types.ts'
+      - '.github/workflows/site.yml'
   pull_request:
-    paths: ['site/**', 'PRIVACY.md', '.github/workflows/site.yml']
+    paths:
+      - 'site/**'
+      - 'PRIVACY.md'
+      - 'src/lib/totp.ts'
+      - 'src/lib/base32.ts'
+      - 'src/lib/types.ts'
+      - '.github/workflows/site.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: website-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -30,20 +42,44 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
+          name: site
           path: site/dist
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: production
+      url: https://totpy.org
+    env:
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Skip without Cloudflare credentials
+        if: env.HAS_CLOUDFLARE != 'true'
+        run: echo "::notice::Not deploying. Add the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets to deploy totpy.org."
+      - if: env.HAS_CLOUDFLARE == 'true'
+        uses: actions/checkout@v7
+      - if: env.HAS_CLOUDFLARE == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - if: env.HAS_CLOUDFLARE == 'true'
+        run: npm ci
+        working-directory: site
+      - if: env.HAS_CLOUDFLARE == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: site/dist
+      - if: env.HAS_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: site
+          command: deploy
