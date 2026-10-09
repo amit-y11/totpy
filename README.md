@@ -89,7 +89,7 @@ in the browser, where you actually need them, without giving up on security:
 
 ## Install
 
-**Chrome Web Store:** coming soon.
+**[Add to Chrome](https://chromewebstore.google.com/detail/hhhkbhfahgcieokmgibiapncicnpcing)** from the Chrome Web Store.
 
 **From a release**
 

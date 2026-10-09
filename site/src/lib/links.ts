@@ -2,7 +2,7 @@ export const REPO = 'https://github.com/amit-y11/totpy';
 
 export const links = {
   repo: REPO,
-  download: `${REPO}/releases/latest`,
+  store: 'https://chromewebstore.google.com/detail/hhhkbhfahgcieokmgibiapncicnpcing',
   releases: `${REPO}/releases`,
   issues: `${REPO}/issues`,
   newIssue: `${REPO}/issues/new/choose`,

@@ -6,6 +6,10 @@ All notable changes to Totpy are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The website and README link to Totpy on the Chrome Web Store
+
 ## [1.0.1] - 2026-10-09
 
 ### Added
