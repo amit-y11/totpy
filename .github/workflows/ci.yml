@@ -23,3 +23,15 @@ jobs:
         with:
           name: extension
           path: dist/
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Uses the Google Chrome that comes with the runner image.
+      - run: npm run test:e2e

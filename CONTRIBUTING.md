@@ -43,9 +43,13 @@ card to pick it up.
 | `npm run build`     | Production build into `dist/`                        |
 | `npm run typecheck` | Strict TypeScript check                              |
 | `npm test`          | Unit tests (Node's test runner, TypeScript directly) |
+| `npm run test:e2e`  | Builds, then tests the extension in headless Chrome  |
 | `npm run check`     | Type check, tests and formatting check               |
 | `npm run format`    | Formats everything with Prettier                     |
 | `npm run package`   | Builds and zips `dist/` into `release/`              |
+
+The end-to-end tests drive the built extension in your installed Google Chrome. If Chrome is
+not in its usual place, set `CHROME_PATH` to its executable.
 
 ## Project structure
 
@@ -71,6 +75,7 @@ src/
   options/               settings page
   ui/                    shared styles, DOM helpers, QR decoding
 tests/                   unit tests
+e2e/                     end-to-end tests in headless Chrome
 scripts/                 build, package and icon scripts
 docs/                    design docs and images
 ```
@@ -144,7 +149,7 @@ push.
 
 1. Fork the repo and create a branch from `main`.
 2. Make your change, with tests where it makes sense.
-3. Run `npm run check`.
+3. Run `npm run check`, and `npm run test:e2e` if you changed the popup, settings or filling.
 4. Load `dist/` in Chrome and try your change in both light and dark mode.
 5. Open a pull request and fill in the template. Screenshots help for UI changes.
 
