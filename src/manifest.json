@@ -36,5 +36,5 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
   },
-  "homepage_url": "https://github.com/amit-y11/totpy"
+  "homepage_url": "https://totpy.org"
 }

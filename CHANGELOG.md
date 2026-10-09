@@ -6,6 +6,14 @@ All notable changes to Totpy are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The [totpy.org](https://totpy.org) website, with the privacy policy at totpy.org/privacy
+
+### Changed
+
+- The extension's homepage link now points to totpy.org
+
 ## [1.0.0] - 2026-10-08
 
 First public release.

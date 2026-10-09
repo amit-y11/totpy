@@ -18,6 +18,7 @@
 </p>
 
 <p align="center">
+  <a href="https://totpy.org"><strong>totpy.org</strong></a> ·
   <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
   <a href="#sync-across-devices">Sync</a> ·

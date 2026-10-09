@@ -55,4 +55,4 @@ Rebuild, reload the extension and turn on **Google Drive** in **Settings → Syn
 - Google Drive sync uses `chrome.identity.getAuthToken`, which is only available in Google
   Chrome.
 - Publishing an app that uses Drive scopes requires Google's OAuth verification, which asks for
-  a homepage and a privacy policy (see [PRIVACY.md](../PRIVACY.md)).
+  a homepage and a privacy policy. Use <https://totpy.org> and <https://totpy.org/privacy>.

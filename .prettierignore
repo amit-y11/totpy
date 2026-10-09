@@ -3,3 +3,5 @@ dist
 release
 package-lock.json
 icons
+site/.astro
+site/public

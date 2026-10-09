@@ -12,7 +12,7 @@
     "mfa",
     "two-factor"
   ],
-  "homepage": "https://github.com/amit-y11/totpy",
+  "homepage": "https://totpy.org",
   "bugs": {
     "url": "https://github.com/amit-y11/totpy/issues"
   },
@@ -35,10 +35,12 @@
     "format:check": "prettier --check .",
     "icons": "python3 scripts/make-icons.py",
     "package": "node scripts/package.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "site:dev": "npm --prefix site run dev",
+    "site:build": "npm --prefix site run build"
   },
   "lint-staged": {
-    "*.{ts,js,json,html,css,md,yml,yaml}": "prettier --write"
+    "*.{ts,js,mjs,json,html,css,md,yml,yaml,astro}": "prettier --write"
   },
   "dependencies": {
     "jsqr": "1.4.0"
@@ -52,6 +54,7 @@
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "prettier": "3.9.9",
+    "prettier-plugin-astro": "1.1.1",
     "typescript": "7.0.2"
   }
 }

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://totpy.org/sitemap-index.xml

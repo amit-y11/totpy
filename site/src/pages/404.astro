@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found — Totpy">
+  <section class="container not-found">
+    <p class="code">404</p>
+    <h1>This page has expired.</h1>
+    <p>Like a 2FA code after 30 seconds. Let's get you somewhere useful.</p>
+    <a class="btn btn-primary" href="/">
+      Back to totpy.org
+    </a>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 120px 0 140px;
+    text-align: center;
+  }
+
+  .code {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 44px);
+  }
+
+  .not-found > p:not(.code) {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 18px;
+  }
+</style>

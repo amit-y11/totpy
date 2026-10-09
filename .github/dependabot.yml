@@ -15,6 +15,16 @@ updates:
       # together with the Node version.
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+  - package-ecosystem: npm
+    directory: /site
+    schedule:
+      interval: weekly
+    groups:
+      site:
+        patterns: ['*']
+    commit-message:
+      prefix: chore
+      include: scope
   - package-ecosystem: github-actions
     directory: /
     schedule:

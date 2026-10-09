@@ -1,0 +1,70 @@
+---
+// Renders the repository's PRIVACY.md so the extension's policy has one source of truth.
+import { Content } from '../../../PRIVACY.md';
+import Base from '../layouts/Base.astro';
+import { links } from '../lib/links';
+---
+
+<Base
+  title="Privacy policy — Totpy"
+  description="Totpy collects no personal data. It has no servers, analytics or tracking."
+>
+  <article class="container prose">
+    <Content />
+
+    <h2>This website</h2>
+    <p>
+      totpy.org has no cookies, analytics, trackers or third-party scripts, and loads no external
+      fonts. It is hosted on GitHub Pages, so GitHub may log technical request data such as IP
+      addresses; see GitHub's privacy statement.
+    </p>
+    <p>
+      The source of this policy is <a href={`${links.repo}/blob/main/PRIVACY.md`}>PRIVACY.md</a> in
+      the Totpy repository, where you can see every change to it.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .prose {
+    max-width: 720px;
+    padding: 72px 0 96px;
+    color: var(--text-soft);
+    font-size: 17px;
+  }
+
+  .prose :global(h1) {
+    margin-bottom: 8px;
+    font-size: clamp(34px, 5vw, 46px);
+  }
+
+  .prose :global(h2) {
+    margin: 40px 0 12px;
+    font-size: 24px;
+  }
+
+  .prose :global(p),
+  .prose :global(ul) {
+    margin: 0 0 16px;
+  }
+
+  .prose :global(ul) {
+    padding-left: 22px;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 10px;
+  }
+
+  .prose :global(em) {
+    color: var(--muted);
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+  }
+
+  .prose :global(a) {
+    color: var(--accent);
+  }
+</style>

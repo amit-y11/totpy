@@ -75,6 +75,17 @@ scripts/                 build, package and icon scripts
 docs/                    design docs and images
 ```
 
+## Website
+
+The [totpy.org](https://totpy.org) website lives in `site/` and is built with
+[Astro](https://astro.build). It deploys to GitHub Pages automatically when `main` changes.
+
+```bash
+cd site && npm install && npm run dev
+```
+
+The privacy page renders the repository's `PRIVACY.md`, so edit the policy there.
+
 ## Guidelines
 
 - **Security first.** Secrets must stay encrypted anywhere outside memory: local storage, sync

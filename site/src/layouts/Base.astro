@@ -1,0 +1,262 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import { links } from '../lib/links';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Totpy — Open-source 2FA authenticator for Chrome',
+  description = 'Free, open-source 2FA codes in your browser. Fill codes with one click, sync them end-to-end encrypted, no account needed.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0c0e" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Totpy" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="Totpy home">
+          <Logo size={28} />
+          <span>Totpy</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a href="/#features">Features</a>
+          <a href="/#security">Security</a>
+          <a href="/#faq">FAQ</a>
+          <a class="nav-github" href={links.repo} aria-label="Totpy on GitHub">
+            <Icon name="github" size={20} />
+          </a>
+          <a class="btn btn-primary nav-cta" href={links.download}>
+            Get Totpy
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="/">
+            <Logo size={24} />
+            <span>Totpy</span>
+          </a>
+          <p>
+            Free, open-source 2FA for Chrome.
+            <br />
+            This site has no cookies, trackers or analytics.
+          </p>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <div>
+            <h3>Product</h3>
+            <a href="/#features">Features</a>
+            <a href={links.download}>Download</a>
+            <a href={links.releases}>Release notes</a>
+          </div>
+          <div>
+            <h3>Trust</h3>
+            <a href="/privacy">Privacy policy</a>
+            <a href={links.securityDesign}>Security design</a>
+            <a href={links.reportVulnerability}>Report a vulnerability</a>
+          </div>
+          <div>
+            <h3>Community</h3>
+            <a href={links.repo}>GitHub</a>
+            <a href={links.contributing}>Contribute</a>
+            <a href={links.license}>MIT License</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <span>© {new Date().getFullYear()} the Totpy contributors</span>
+        <span>Made with care, in the open.</span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .skip:focus {
+    left: 16px;
+    top: 12px;
+    z-index: 100;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(1.6) blur(14px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .brand :global(svg) {
+    border-radius: 8px;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 15px;
+  }
+
+  .nav a:not(.btn) {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav a:not(.btn):hover {
+    color: var(--text);
+  }
+
+  .nav-github {
+    display: inline-flex;
+  }
+
+  .nav-cta {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 14px;
+    box-shadow: none;
+  }
+
+  .footer {
+    padding: 64px 0 32px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-soft);
+    font-size: 14px;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand p {
+    margin-top: 14px;
+    color: var(--muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links h3 {
+    margin-bottom: 14px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .footer-links div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    color: var(--text-soft);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  @media (max-width: 720px) {
+    .nav a:not(.btn):not(.nav-github) {
+      display: none;
+    }
+
+    .nav {
+      gap: 16px;
+    }
+
+    .footer-links {
+      gap: 40px;
+    }
+  }
+</style>
