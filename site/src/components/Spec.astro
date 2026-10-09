@@ -1,0 +1,248 @@
+---
+import { links } from '../lib/links';
+import Icon from './Icon.astro';
+
+const rows = [
+  {
+    label: 'Encryption',
+    value: 'AES-256-GCM',
+    note: 'Authenticated encryption for everything stored or synced.',
+  },
+  {
+    label: 'Password hardening',
+    value: '600,000',
+    count: 600000,
+    unit: '× PBKDF2-SHA-256',
+    note: 'Every password guess costs an attacker 600,000 rounds.',
+  },
+  {
+    label: 'Vault key',
+    value: '256-bit',
+    note: 'Random, and locked by both your password and your recovery code.',
+  },
+  {
+    label: 'Recovery code',
+    value: '160-bit',
+    note: 'Shown once. Never stored in plain text.',
+  },
+  {
+    label: 'Sync integrity',
+    value: 'HMAC-SHA-256',
+    note: 'Tampered or downgraded copies are rejected, not merged.',
+  },
+  {
+    label: 'Website access',
+    value: 'activeTab',
+    note: 'Only the tab you click Fill or Insert on. Never in the background.',
+  },
+];
+
+const zeros = [
+  { label: 'Servers', from: 12 },
+  { label: 'Trackers', from: 37 },
+  { label: 'Accounts to create', from: 4 },
+  { label: 'Minified files', from: 21 },
+];
+---
+
+<section class="paper section spec" id="security">
+  <div class="container spec-grid">
+    <div class="spec-intro">
+      <div class="sticky">
+        <p class="eyebrow" data-reveal>
+          Security
+        </p>
+        <h2 class="display" data-reveal style="--d:1">
+          The spec <span class="serif">sheet.</span>
+        </h2>
+        <p class="lede" data-reveal style="--d:2">
+          Open source, so you don’t have to take our word for any of it. Here is exactly how your
+          codes are protected.
+        </p>
+        <div class="spec-cta" data-reveal style="--d:3">
+          <a class="btn btn-dark" href={links.securityDesign}>
+            Read the security design <Icon name="arrow" class="arrow" />
+          </a>
+          <a class="report" href={links.reportVulnerability}>
+            Found a problem? Report it privately.
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <dl class="spec-table">
+      {rows.map((row, i) => (
+        <div class="spec-row" data-reveal style={`--d:${i % 3}`}>
+          <dt class="mono">{row.label}</dt>
+          <dd>
+            <span class="value">
+              {row.count ? <span data-count-to={row.count}>{row.value}</span> : row.value}
+              {row.unit && <span class="unit mono">{row.unit}</span>}
+            </span>
+            <span class="note">{row.note}</span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+
+  <div class="container zeros">
+    {zeros.map((z, i) => (
+      <div class="zero" data-reveal style={`--d:${i}`}>
+        <span class="zero-num" data-count-from={z.from} data-count-to="0">
+          0
+        </span>
+        <span class="zero-label mono">{z.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 80px;
+  }
+
+  .sticky {
+    position: sticky;
+    top: 130px;
+    display: grid;
+    gap: 22px;
+  }
+
+  .spec-cta {
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .report {
+    color: var(--paper-muted);
+    font-size: 14.5px;
+    text-underline-offset: 3px;
+  }
+
+  .spec-table {
+    margin: 0;
+    border-top: 2px solid var(--paper-ink);
+  }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 24px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  dt {
+    padding-top: 9px;
+    color: var(--paper-muted);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .value {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .unit {
+    color: var(--brand-deep);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .note {
+    color: var(--paper-muted);
+    font-size: 15.5px;
+  }
+
+  .zeros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 120px;
+    border-top: 2px solid var(--paper-ink);
+  }
+
+  .zero {
+    display: grid;
+    gap: 8px;
+    padding: 30px 20px 0 0;
+  }
+
+  .zero + .zero {
+    padding-left: 24px;
+    border-left: 1px solid var(--paper-line);
+  }
+
+  .zero-num {
+    font-size: clamp(72px, 9vw, 132px);
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.85;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .zero-label {
+    color: var(--paper-muted);
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 960px) {
+    .spec-grid {
+      grid-template-columns: 1fr;
+      gap: 56px;
+    }
+
+    .sticky {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .spec-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    dt {
+      padding-top: 0;
+    }
+
+    .zeros {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 40px;
+    }
+
+    .zero + .zero {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .zero:nth-child(even) {
+      padding-left: 20px;
+      border-left: 1px solid var(--paper-line);
+    }
+  }
+</style>

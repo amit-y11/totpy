@@ -1,0 +1,384 @@
+---
+import QRCode from 'qrcode';
+import { DEMO, demoUri } from '../lib/demo';
+import { links } from '../lib/links';
+import Icon from './Icon.astro';
+import LiveDial from './LiveDial.astro';
+
+const qr = await QRCode.toString(demoUri, {
+  type: 'svg',
+  margin: 0,
+  errorCorrectionLevel: 'M',
+  color: { dark: '#0b0b10', light: '#ffffff' },
+});
+
+const ticker = [
+  'End-to-end encrypted',
+  'One-click fill',
+  'Chrome sync + Google Drive',
+  'Google Authenticator import',
+  'Recovery code',
+  'No account',
+  'No trackers',
+  'MIT licensed',
+  'RFC 6238',
+];
+---
+
+<section class="hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow" data-reveal>
+        Free &amp; open-source 2FA for Chrome
+      </p>
+      <h1 data-reveal style="--d:1">
+        <span class="line">A new key every</span>
+        <span class="line">30 seconds.</span>
+        <span class="line">
+          <span class="serif">One click</span> to use it.
+        </span>
+      </h1>
+      <p class="lede" data-reveal style="--d:2">
+        Totpy keeps your two-factor codes in Chrome, encrypted end to end. Fill them with a click,
+        sync them without trusting anyone, and leave your phone in your pocket.
+      </p>
+      <div class="hero-cta" data-reveal style="--d:3">
+        <a class="btn btn-primary" href={links.download}>
+          <Icon name="download" /> Download for Chrome
+        </a>
+        <a class="btn" href={links.repo}>
+          <Icon name="github" /> Star on GitHub
+        </a>
+      </div>
+      <ul class="hero-proof" data-reveal style="--d:4">
+        <li>
+          <Icon name="check" size={16} /> No account
+        </li>
+        <li>
+          <Icon name="check" size={16} /> No servers
+        </li>
+        <li>
+          <Icon name="check" size={16} /> No paywall
+        </li>
+      </ul>
+    </div>
+
+    <div class="hero-visual" data-reveal style="--d:2">
+      <LiveDial id="hero" secret={DEMO.secret} label="Live demo key" />
+
+      <aside class="sticker" aria-label="Try the demo with your own authenticator">
+        <div class="sticker-qr" set:html={qr} />
+        <div>
+          <p class="sticker-title">Don't trust us. Scan it.</p>
+          <p class="sticker-text">
+            Add this demo to any authenticator app. Your phone will show the exact same code.
+          </p>
+        </div>
+      </aside>
+
+      <a class="demo-link" href={demoUri}>
+        <Icon name="scan" size={16} /> Add the demo key to your authenticator
+      </a>
+
+      <span class="chip chip-a">
+        <span class="live-dot"></span> computed in your browser
+      </span>
+      <span class="chip chip-b">RFC 6238 · SHA-1 · 6 digits</span>
+    </div>
+  </div>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      {[...ticker, ...ticker].map((item) => (
+        <span class="ticker-item">
+          {item}
+          <span class="ticker-star">✳</span>
+        </span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 150px 0 0;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(70% 60% at 65% 40%, #000 20%, transparent 75%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(closest-side, rgb(91 91 214 / 0.32), transparent);
+    filter: blur(10px);
+  }
+
+  .hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 48px;
+    padding-bottom: 110px;
+  }
+
+  h1 {
+    margin-top: 28px;
+    font-size: clamp(46px, 5.3vw, 80px);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.94;
+  }
+
+  h1 .serif {
+    font-size: 1.1em;
+    letter-spacing: -0.025em;
+    color: var(--lime);
+  }
+
+  .line {
+    display: block;
+  }
+
+  @media (min-width: 1021px) {
+    .line {
+      white-space: nowrap;
+    }
+  }
+
+  .lede {
+    margin-top: 30px;
+  }
+
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 38px;
+  }
+
+  .hero-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 28px 0 0;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+    list-style: none;
+  }
+
+  .hero-proof li {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .hero-proof :global(svg) {
+    color: var(--lime);
+  }
+
+  .hero-visual {
+    position: relative;
+    max-width: 580px;
+    justify-self: end;
+    width: 100%;
+  }
+
+  .sticker {
+    position: absolute;
+    left: -46px;
+    bottom: -10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 300px;
+    padding: 12px 16px 12px 12px;
+    border-radius: 18px;
+    background: #fbfbf8;
+    color: #131317;
+    box-shadow:
+      0 30px 60px -20px rgb(0 0 0 / 0.75),
+      0 0 0 1px rgb(255 255 255 / 0.2);
+    transform: rotate(-4deg);
+    animation: bob 7s ease-in-out infinite;
+  }
+
+  .sticker-qr {
+    flex-shrink: 0;
+    width: 84px;
+    padding: 6px;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .sticker-qr :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .sticker-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .sticker-text {
+    margin-top: 3px;
+    color: #55534d;
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+
+  .demo-link {
+    display: none;
+  }
+
+  .chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: rgb(13 13 18 / 0.75);
+    backdrop-filter: blur(10px);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .chip-a {
+    top: 4%;
+    right: -6px;
+    animation: bob 6s ease-in-out infinite reverse;
+  }
+
+  .chip-b {
+    right: -12px;
+    bottom: 3%;
+    animation: bob 8s ease-in-out 1s infinite;
+  }
+
+  @keyframes bob {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -10px;
+    }
+  }
+
+  /* Ticker */
+
+  .ticker {
+    position: relative;
+    overflow: hidden;
+    border-block: 1px solid var(--line);
+    background: var(--ink-2);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker 50s linear infinite;
+  }
+
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    padding: 18px 0 18px 28px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .ticker-star {
+    color: var(--lime);
+  }
+
+  @keyframes ticker {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 1020px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 72px;
+    }
+
+    .hero-visual {
+      justify-self: center;
+      max-width: 520px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding-top: 120px;
+    }
+
+    .hero-inner {
+      gap: 56px;
+      padding-bottom: 80px;
+    }
+
+    .sticker,
+    .chip-b {
+      display: none;
+    }
+
+    .chip-a {
+      top: -14px;
+      right: 50%;
+      translate: 50% 0;
+      animation: none;
+    }
+
+    .demo-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 22px;
+      color: var(--lime);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sticker,
+    .chip,
+    .ticker-track {
+      animation: none;
+    }
+  }
+</style>

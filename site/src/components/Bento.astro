@@ -1,0 +1,1062 @@
+---
+// Feature grid where every card demonstrates itself. Animations only run while
+// the grid is on screen (motion.ts toggles .is-playing).
+import QRCode from 'qrcode';
+import { SAMPLE_ACCOUNTS } from '../lib/demo';
+import Logo from './Logo.astro';
+
+const qr = await QRCode.toString(
+  'otpauth://totp/Orbit:you%40work.com?secret=ORBITORBITORBIT2&issuer=Orbit',
+  {
+    type: 'svg',
+    margin: 0,
+    errorCorrectionLevel: 'L',
+    color: { dark: '#ededef', light: '#0000' },
+  },
+);
+
+const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
+---
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="sec-head">
+      <p class="eyebrow" data-reveal>
+        Features
+      </p>
+      <h2 class="display" data-reveal style="--d:1">
+        Small details. <span class="serif">Big difference.</span>
+      </h2>
+      <p class="lede" data-reveal style="--d:2">
+        Everything an authenticator should do, plus the things you only notice once you’ve had them.
+      </p>
+    </div>
+
+    <div class="bento" data-play data-bento>
+      <!-- A: right-click insert -->
+      <article class="card a" data-reveal>
+        <div class="card-copy">
+          <h3>Fill it, or right-click it in.</h3>
+          <p>
+            Click <b>Fill</b> in the popup, or right-click any code field and choose{' '}
+            <b>Insert 2FA code</b>.
+          </p>
+        </div>
+        <div class="demo demo-insert" aria-hidden="true">
+          <div class="scene" data-fit="540">
+            <div class="field">
+              <span class="field-label">Authentication code</span>
+              <div class="boxes">
+                {['4', '1', '8', '2', '0', '3'].map((d, i) => (
+                  <span class="box">
+                    <i style={`--i:${i}`}>{d}</i>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div class="menu">
+              <span>Copy</span>
+              <span>Paste</span>
+              <span class="sep"></span>
+              <span class="menu-hl">
+                Insert 2FA code <em>›</em>
+              </span>
+            </div>
+            <div class="submenu">
+              <span class="sub-hl">
+                <Logo size={14} /> Best match for this site
+              </span>
+              <span>Orbit</span>
+              <span>Northwind</span>
+            </div>
+            <svg class="mini-cursor" viewBox="0 0 24 24" width="22" height="22">
+              <path
+                d="M4 2.5 20 13l-7.2 1.6L9 21.5z"
+                fill="#fff"
+                stroke="#111"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- B: site match -->
+      <article class="card b" data-reveal style="--d:1">
+        <div class="card-copy">
+          <h3>Knows the site.</h3>
+          <p>The right account is suggested before you search.</p>
+        </div>
+        <div class="demo demo-site" aria-hidden="true">
+          <div class="url mono">
+            <svg
+              viewBox="0 0 24 24"
+              width="12"
+              height="12"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+            >
+              <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+              <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+            </svg>
+            <span data-site-text>orbit.dev</span>
+            <span class="url-caret"></span>
+          </div>
+          <div class="site-list">
+            {SAMPLE_ACCOUNTS.slice(0, 3).map((acc) => (
+              <div class="site-row" data-site-row={acc.issuer.toLowerCase().split(' ')[0]}>
+                <span class="dot" style={`--h:${acc.hue}`} />
+                {acc.issuer}
+                <span class="tag">Suggested</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </article>
+
+      <!-- C: scan -->
+      <article class="card c" data-reveal style="--d:2">
+        <div class="card-copy">
+          <h3>Scans the screen.</h3>
+          <p>No phone camera. Just the QR code on the page.</p>
+        </div>
+        <div class="demo demo-scan" aria-hidden="true">
+          <div class="qr-frame">
+            <div class="qr" set:html={qr} />
+            <span class="laser"></span>
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+            <span class="scan-ok">✓</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- D: import -->
+      <article class="card d" data-reveal style="--d:1">
+        <div class="card-copy">
+          <h3>Brings your accounts.</h3>
+          <p>Import a whole Google Authenticator export in one go.</p>
+        </div>
+        <div class="demo demo-import" aria-hidden="true">
+          {imported.map((name, i) => (
+            <span class="imp" style={`--i:${i}`}>
+              <span class="imp-check">✓</span> {name}
+            </span>
+          ))}
+        </div>
+      </article>
+
+      <!-- E: recovery -->
+      <article class="card e" data-reveal style="--d:2">
+        <div class="card-copy">
+          <h3>Never locked out.</h3>
+          <p>A recovery code resets a forgotten password.</p>
+        </div>
+        <div class="demo demo-recovery" aria-hidden="true">
+          <span class="mono" data-recovery>
+            K7PQ-3XWM-9RTA-H2LE
+          </span>
+          <span class="mono" data-recovery>
+            VN4C-ZQ8D-JW5S-M6BY
+          </span>
+        </div>
+      </article>
+
+      <!-- F: copies -->
+      <article class="card f" data-reveal>
+        <div class="card-copy">
+          <h3>Undo for a week.</h3>
+          <p>An encrypted copy every day, kept for 7 days.</p>
+        </div>
+        <div class="demo demo-days" aria-hidden="true">
+          {days.map((day, i) => (
+            <span class="day" style={`--i:${i}`}>
+              <span class="day-bar" />
+              <span class="day-label mono">{day}</span>
+            </span>
+          ))}
+        </div>
+      </article>
+
+      <!-- G: clock -->
+      <article class="card g" data-reveal style="--d:1">
+        <div class="card-copy">
+          <h3>Catches clock drift.</h3>
+          <p>Warns you before a site rejects a code.</p>
+        </div>
+        <div class="demo demo-clock" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="clock">
+            <circle cx="32" cy="32" r="28"></circle>
+            <line class="hand" x1="32" y1="32" x2="32" y2="12"></line>
+            <circle cx="32" cy="32" r="3" class="hub"></circle>
+          </svg>
+          <span class="clock-status">
+            <span class="st st-off mono">2 min behind</span>
+            <span class="st st-ok mono">in sync ✓</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- H: free -->
+      <article class="card h" data-reveal style="--d:2">
+        <div class="free">
+          <span class="price serif">$0</span>
+          <div>
+            <h3>Free. Actually free.</h3>
+            <p>No limits, no tiers, no ads, no “Pro”. MIT licensed, forever.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      'a a b c'
+      'a a d e'
+      'f g h h';
+    gap: 16px;
+  }
+
+  .a {
+    grid-area: a;
+  }
+  .b {
+    grid-area: b;
+  }
+  .c {
+    grid-area: c;
+  }
+  .d {
+    grid-area: d;
+  }
+  .e {
+    grid-area: e;
+  }
+  .f {
+    grid-area: f;
+  }
+  .g {
+    grid-area: g;
+  }
+  .h {
+    grid-area: h;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 280px;
+    overflow: hidden;
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, var(--panel), var(--ink-2));
+    isolation: isolate;
+  }
+
+  /* Cursor spotlight */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, -20%),
+      rgb(131 132 248 / 0.14),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card h3 {
+    font-size: 22px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+
+  .card p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+
+  .card b {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .a {
+    justify-content: flex-start;
+  }
+
+  .a h3 {
+    font-size: clamp(26px, 2.6vw, 34px);
+  }
+
+  .a .demo-insert {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .demo {
+    position: relative;
+  }
+
+  /* Pause every loop while the grid is off screen. */
+  .bento:not(.is-playing) * {
+    animation-play-state: paused !important;
+  }
+
+  /* A — right-click insert (7s loop) */
+
+  .demo-insert {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 20% 0%, rgb(131 132 248 / 0.12), transparent 60%), var(--ink);
+  }
+
+  .scene {
+    position: relative;
+    width: 540px;
+    height: 330px;
+  }
+
+  .field {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+  }
+
+  .field-label {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .boxes {
+    display: flex;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .box {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 46px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--panel);
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .box:nth-child(4) {
+    margin-left: 8px;
+  }
+
+  .box i {
+    font-style: normal;
+    opacity: 0;
+    animation: digit-in 7s var(--ease) infinite;
+    animation-delay: calc(var(--i) * 0.09s);
+  }
+
+  @keyframes digit-in {
+    0%,
+    57% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    61%,
+    92% {
+      opacity: 1;
+      transform: none;
+      color: var(--lime);
+    }
+    97%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .menu,
+  .submenu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    background: #1b1b22;
+    box-shadow: 0 24px 50px -10px rgb(0 0 0 / 0.6);
+    font-size: 13px;
+    opacity: 0;
+  }
+
+  .menu span,
+  .submenu span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    color: #d8d8de;
+    white-space: nowrap;
+  }
+
+  .menu .sep,
+  .submenu .sep {
+    height: 1px;
+    padding: 0;
+    margin: 3px 4px;
+    background: var(--line);
+  }
+
+  .menu em {
+    color: var(--dim);
+    font-style: normal;
+  }
+
+  .menu {
+    top: 112px;
+    left: 130px;
+    width: 186px;
+    animation: menu-show 7s var(--ease) infinite;
+  }
+
+  .submenu {
+    top: 193px;
+    left: 304px;
+    width: 216px;
+    animation: sub-show 7s var(--ease) infinite;
+  }
+
+  .submenu .sub-hl {
+    justify-content: flex-start;
+  }
+
+  .submenu :global(svg) {
+    border-radius: 4px;
+  }
+
+  .menu-hl {
+    animation: hl-menu 7s infinite;
+  }
+
+  .sub-hl {
+    animation: hl-sub 7s infinite;
+  }
+
+  @keyframes menu-show {
+    0%,
+    14% {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    17%,
+    53% {
+      opacity: 1;
+      transform: none;
+    }
+    56%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes sub-show {
+    0%,
+    29% {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    32%,
+    53% {
+      opacity: 1;
+      transform: none;
+    }
+    56%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes hl-menu {
+    0%,
+    24% {
+      background: transparent;
+    }
+    27%,
+    53% {
+      background: #5b5bd6;
+      color: #fff;
+    }
+  }
+
+  @keyframes hl-sub {
+    0%,
+    40% {
+      background: transparent;
+    }
+    43%,
+    53% {
+      background: #5b5bd6;
+      color: #fff;
+    }
+  }
+
+  .mini-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.5));
+    animation: cursor-path 7s var(--ease-io) infinite;
+  }
+
+  @keyframes cursor-path {
+    0% {
+      opacity: 0;
+      transform: translate(300px, 260px);
+    }
+    6% {
+      opacity: 1;
+    }
+    12% {
+      transform: translate(124px, 100px);
+    }
+    14% {
+      transform: translate(124px, 100px) scale(0.85);
+    }
+    16% {
+      transform: translate(124px, 100px);
+    }
+    25% {
+      transform: translate(226px, 208px);
+    }
+    40% {
+      transform: translate(396px, 208px);
+    }
+    48% {
+      transform: translate(396px, 208px) scale(0.85);
+    }
+    50% {
+      transform: translate(396px, 208px);
+    }
+    66% {
+      opacity: 1;
+      transform: translate(470px, 280px);
+    }
+    75%,
+    100% {
+      opacity: 0;
+      transform: translate(470px, 280px);
+    }
+  }
+
+  /* B — site match */
+
+  .demo-site {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .url {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .url svg {
+    color: var(--muted);
+  }
+
+  .url-caret {
+    width: 1.5px;
+    height: 15px;
+    margin-left: -6px;
+    background: var(--lime);
+    animation: caret 1s steps(1) infinite;
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .site-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .site-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    transition:
+      background 0.4s,
+      border-color 0.4s,
+      color 0.4s;
+  }
+
+  .site-row .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    background: hsl(var(--h) 75% 65%);
+  }
+
+  .tag {
+    margin-left: auto;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgb(201 246 95 / 0.14);
+    color: var(--lime);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(6px);
+    transition:
+      opacity 0.35s,
+      transform 0.35s var(--ease);
+  }
+
+  .site-row.is-match {
+    border-color: var(--line-strong);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--text);
+  }
+
+  .site-row.is-match .tag {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* C — scan (3.4s loop) */
+
+  .demo-scan {
+    display: grid;
+    place-items: center;
+  }
+
+  .qr-frame {
+    position: relative;
+    width: 128px;
+    padding: 14px;
+  }
+
+  .qr :global(svg) {
+    width: 100%;
+    height: auto;
+    opacity: 0.85;
+  }
+
+  .corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid var(--lime);
+  }
+
+  .tl {
+    top: 0;
+    left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-top-left-radius: 8px;
+  }
+  .tr {
+    top: 0;
+    right: 0;
+    border-left: 0;
+    border-bottom: 0;
+    border-top-right-radius: 8px;
+  }
+  .bl {
+    bottom: 0;
+    left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom-left-radius: 8px;
+  }
+  .br {
+    bottom: 0;
+    right: 0;
+    border-left: 0;
+    border-top: 0;
+    border-bottom-right-radius: 8px;
+  }
+
+  .laser {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--lime);
+    box-shadow: 0 0 16px 3px rgb(201 246 95 / 0.6);
+    animation: laser 3.4s var(--ease-io) infinite;
+  }
+
+  @keyframes laser {
+    0% {
+      top: 10%;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    35% {
+      top: 88%;
+    }
+    62% {
+      top: 10%;
+      opacity: 1;
+    }
+    68%,
+    100% {
+      top: 10%;
+      opacity: 0;
+    }
+  }
+
+  .scan-ok {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--lime-ink);
+    font-weight: 800;
+    animation: pop 3.4s var(--ease) infinite;
+  }
+
+  @keyframes pop {
+    0%,
+    64% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    70%,
+    94% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* D — import (5s loop) */
+
+  .demo-import {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .imp {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px 7px 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--ink);
+    font-size: 13px;
+    animation: imp-in 5s var(--ease) infinite;
+    animation-delay: calc(var(--i) * 0.22s);
+  }
+
+  .imp-check {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(201 246 95 / 0.16);
+    color: var(--lime);
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  @keyframes imp-in {
+    0%,
+    6% {
+      opacity: 0;
+      transform: translateY(14px) scale(0.9);
+    }
+    16%,
+    86% {
+      opacity: 1;
+      transform: none;
+    }
+    94%,
+    100% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  /* E — recovery */
+
+  .demo-recovery {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 14px;
+    background: var(--ink);
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+
+  /* F — daily copies (4.2s loop) */
+
+  .demo-days {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 6px;
+    height: 92px;
+  }
+
+  .day {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+  }
+
+  .day-bar {
+    flex: 1;
+    width: 100%;
+    max-width: 22px;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.07);
+    animation: day-fill 4.2s var(--ease) infinite;
+    animation-delay: calc(var(--i) * 0.3s);
+  }
+
+  .day-label {
+    color: var(--dim);
+    font-size: 11px;
+  }
+
+  @keyframes day-fill {
+    0%,
+    5% {
+      background: rgb(255 255 255 / 0.07);
+      transform: scaleY(0.4);
+    }
+    15%,
+    70% {
+      background: linear-gradient(var(--brand), rgb(131 132 248 / 0.25));
+      transform: none;
+    }
+    100% {
+      background: rgb(255 255 255 / 0.07);
+      transform: scaleY(0.4);
+    }
+  }
+
+  .day-bar {
+    transform-origin: bottom;
+  }
+
+  /* G — clock (5s loop) */
+
+  .demo-clock {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .clock {
+    width: 64px;
+    height: 64px;
+  }
+
+  .clock circle:first-child {
+    fill: var(--ink);
+    stroke: var(--line-strong);
+    stroke-width: 2;
+  }
+
+  .hand {
+    stroke: var(--amber);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform-origin: 32px 32px;
+    animation: hand 5s var(--ease-io) infinite;
+  }
+
+  .hub {
+    fill: var(--text);
+  }
+
+  @keyframes hand {
+    0%,
+    45% {
+      transform: rotate(-60deg);
+      stroke: var(--amber);
+    }
+    55%,
+    100% {
+      transform: rotate(0deg);
+      stroke: var(--lime);
+    }
+  }
+
+  .clock-status {
+    display: grid;
+    font-size: 13.5px;
+  }
+
+  .st {
+    grid-area: 1 / 1;
+  }
+
+  .st-off {
+    color: var(--amber);
+    animation: st-off 5s infinite;
+  }
+
+  .st-ok {
+    color: var(--lime);
+    opacity: 0;
+    animation: st-ok 5s infinite;
+  }
+
+  @keyframes st-off {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    52%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes st-ok {
+    0%,
+    50% {
+      opacity: 0;
+    }
+    56%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  /* H — free */
+
+  .h {
+    justify-content: center;
+    background:
+      radial-gradient(80% 120% at 0% 100%, rgb(201 246 95 / 0.12), transparent 60%),
+      linear-gradient(180deg, var(--panel), var(--ink-2));
+  }
+
+  .free {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .price {
+    color: var(--lime);
+    font-size: clamp(96px, 10vw, 150px);
+    line-height: 0.8;
+  }
+
+  .free h3 {
+    font-size: 30px;
+  }
+
+  @media (max-width: 1080px) {
+    .bento {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-areas:
+        'a a'
+        'b c'
+        'd e'
+        'f g'
+        'h h';
+    }
+  }
+
+  @media (max-width: 640px) {
+    .bento {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h';
+    }
+
+    .free {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bento * {
+      animation-play-state: paused !important;
+      animation-delay: -4.6s !important;
+    }
+  }
+</style>

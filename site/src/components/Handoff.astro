@@ -1,0 +1,748 @@
+---
+// Scroll-driven story: the section pins while scrolling through three steps.
+// scripts/motion.ts toggles .is-s1/.is-s2/.is-s3 and flies the digits.
+import { SAMPLE_ACCOUNTS } from '../lib/demo';
+import Logo from './Logo.astro';
+
+const [primary, ...others] = SAMPLE_ACCOUNTS;
+
+const steps = [
+  {
+    title: 'A site asks for your code.',
+    text: 'The six-digit dance, every single sign-in. Usually with your phone somewhere else.',
+  },
+  {
+    title: 'Totpy already knows which one.',
+    text: 'Open it and the account for the site you’re on is waiting at the top.',
+  },
+  {
+    title: 'One click. You’re in.',
+    text: 'Fill types the code straight into the page. That’s the whole workflow.',
+  },
+];
+
+const RING = (2 * Math.PI * 6).toFixed(2);
+---
+
+<section class="handoff" id="how" data-handoff>
+  <div class="handoff-sticky">
+    <div class="container handoff-grid">
+      <div class="handoff-copy">
+        <p class="eyebrow">How it works</p>
+        <div class="handoff-steps-wrap">
+          <span class="rail" aria-hidden="true">
+            <span class="rail-fill"></span>
+          </span>
+          <ol class="handoff-steps">
+            {steps.map((step, i) => (
+              <li data-step={i + 1} class={i === 0 ? 'is-active' : ''}>
+                <span class="step-num">0{i + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+
+      <div class="stage-wrap" data-stage-wrap aria-hidden="true">
+        <div class="stage" data-stage>
+          <div class="win">
+            <div class="win-bar">
+              <span class="win-dots">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+              <span class="win-url">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="11"
+                  height="11"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                >
+                  <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                </svg>
+                app.orbit.dev/login/verify
+              </span>
+              <span class="win-ext">
+                <Logo size={18} />
+              </span>
+            </div>
+            <div class="win-page">
+              <div class="site-logo">
+                <span></span> Orbit
+              </div>
+              <h4>Two-factor authentication</h4>
+              <p>Enter the 6-digit code from your authenticator app.</p>
+              <div class="otp">
+                {[0, 1, 2, 3, 4, 5].map(() => (
+                  <span class="otp-box" />
+                ))}
+              </div>
+              <div class="site-btn">
+                <span class="label-verify">Verify</span>
+                <span class="label-done">✓ Verified</span>
+              </div>
+            </div>
+            <div class="toast">
+              <span>✓</span> Signed in to Orbit
+            </div>
+          </div>
+
+          <div class="pop" data-clock>
+            <div class="pop-bar">
+              <span class="pop-search">Search</span>
+              <span class="pop-icons">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+            </div>
+            <p class="pop-sec">Suggested for orbit.dev</p>
+            <div class="pop-row is-match">
+              <span class="av" style={`--h:${primary.hue}`}>
+                {primary.issuer[0]}
+              </span>
+              <span class="meta">
+                <b>{primary.issuer}</b>
+                <small>{primary.account}</small>
+              </span>
+              <span class="pop-fill">Fill</span>
+              <span class="pop-code" data-code={primary.secret} data-split data-fill-source>
+                ------
+              </span>
+              <svg class="ring" viewBox="0 0 16 16" style={`--ring:${RING}`}>
+                <circle cx="8" cy="8" r="6"></circle>
+                <circle class="ring-live" cx="8" cy="8" r="6"></circle>
+              </svg>
+            </div>
+            <p class="pop-sec">All accounts</p>
+            {others.map((acc) => (
+              <div class="pop-row">
+                <span class="av" style={`--h:${acc.hue}`}>
+                  {acc.issuer[0]}
+                </span>
+                <span class="meta">
+                  <b>{acc.issuer}</b>
+                  <small>{acc.account}</small>
+                </span>
+                <span class="pop-code" data-code={acc.secret}>
+                  ------
+                </span>
+                <svg class="ring" viewBox="0 0 16 16" style={`--ring:${RING}`}>
+                  <circle cx="8" cy="8" r="6" />
+                  <circle class="ring-live" cx="8" cy="8" r="6" />
+                </svg>
+              </div>
+            ))}
+          </div>
+
+          <svg class="cursor" viewBox="0 0 24 24" width="26" height="26">
+            <path
+              d="M4 2.5 20 13l-7.2 1.6L9 21.5z"
+              fill="#fff"
+              stroke="#111"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .handoff {
+    position: relative;
+    height: 360vh;
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(60% 50% at 75% 50%, rgb(91 91 214 / 0.16), transparent 70%), var(--ink);
+  }
+
+  .handoff-sticky {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .handoff-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    align-items: center;
+    gap: 64px;
+  }
+
+  .handoff-steps-wrap {
+    position: relative;
+    margin-top: 36px;
+    padding-left: 32px;
+  }
+
+  .rail {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+
+  .rail-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background: linear-gradient(var(--brand), var(--lime));
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .handoff-steps {
+    display: grid;
+    gap: 34px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .handoff-steps li {
+    opacity: 0.28;
+    transition: opacity 0.5s var(--ease);
+  }
+
+  .handoff-steps li.is-active {
+    opacity: 1;
+  }
+
+  .step-num {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--dim);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    transition: color 0.4s;
+  }
+
+  .is-active .step-num {
+    color: var(--lime);
+  }
+
+  .handoff-steps h3 {
+    font-size: clamp(26px, 2.7vw, 36px);
+    font-weight: 650;
+  }
+
+  .handoff-steps p {
+    max-width: 400px;
+    margin-top: 10px;
+    color: var(--muted);
+  }
+
+  /* Stage: a fixed 600×440 scene, scaled to fit by motion.ts. */
+
+  .handoff-copy,
+  .stage-wrap {
+    min-width: 0;
+  }
+
+  .stage-wrap {
+    height: calc(440px * var(--scale, 1));
+  }
+
+  .stage {
+    position: relative;
+    width: 600px;
+    height: 440px;
+    transform: scale(var(--scale, 1));
+    transform-origin: top left;
+  }
+
+  .win {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #fdfdfb;
+    color: #18181b;
+    box-shadow:
+      0 50px 100px -30px rgb(0 0 0 / 0.8),
+      0 0 0 1px rgb(255 255 255 / 0.12);
+  }
+
+  .win-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 42px;
+    padding: 0 12px 0 16px;
+    border-bottom: 1px solid #ececea;
+    background: #f4f4f2;
+  }
+
+  .win-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .win-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dcdcd8;
+  }
+
+  .win-url {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 7px;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: #fff;
+    color: #6b6b70;
+    font-family: var(--mono);
+    font-size: 11.5px;
+  }
+
+  .win-ext {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    transition: background 0.3s;
+  }
+
+  .win-ext :global(svg) {
+    border-radius: 5px;
+  }
+
+  .is-s1:not(.is-s3) .win-ext {
+    background: #e6e6fb;
+  }
+
+  .win-page {
+    padding: 46px 52px;
+  }
+
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .site-logo span {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: conic-gradient(#18181b 0 50%, #c8c8c4 0);
+  }
+
+  .win-page h4 {
+    margin-top: 30px;
+    font-size: 26px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+
+  .win-page p {
+    margin-top: 8px;
+    color: #6b6b70;
+    font-size: 14.5px;
+  }
+
+  .otp {
+    display: flex;
+    gap: 9px;
+    margin-top: 26px;
+  }
+
+  .otp-box {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 54px;
+    border: 1.5px solid #d6d6d2;
+    border-radius: 10px;
+    background: #fff;
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 600;
+    transition:
+      border-color 0.4s,
+      background 0.4s,
+      color 0.4s;
+  }
+
+  .otp-box:nth-child(4) {
+    margin-left: 10px;
+  }
+
+  .otp-box:first-child:empty::after {
+    content: '';
+    width: 2px;
+    height: 24px;
+    background: #5b5bd6;
+    animation: caret 1.1s steps(1) infinite;
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .otp-box.is-filled {
+    border-color: #5b5bd6;
+  }
+
+  .is-s3 .otp-box {
+    border-color: #4ea53a;
+    background: #f1fbe9;
+    color: #1d4d12;
+  }
+
+  .site-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 305px;
+    height: 46px;
+    margin-top: 22px;
+    border-radius: 10px;
+    background: #18181b;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.4s;
+  }
+
+  .site-btn span {
+    grid-area: 1 / 1;
+    transition: opacity 0.3s;
+  }
+
+  .label-done {
+    opacity: 0;
+  }
+
+  .is-s3 .site-btn {
+    background: #2f7d1f;
+  }
+
+  .is-s3 .label-verify {
+    opacity: 0;
+  }
+
+  .is-s3 .label-done {
+    opacity: 1;
+  }
+
+  .toast {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 18px 11px 12px;
+    border-radius: 999px;
+    background: #131317;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translate(-50%, 16px);
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.6s var(--ease);
+  }
+
+  .toast span {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--lime-ink);
+    font-size: 12px;
+  }
+
+  .is-s3 .toast {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-delay: 0.25s;
+  }
+
+  /* Totpy popup, recreated so it can animate. */
+
+  .pop {
+    position: absolute;
+    top: 47px;
+    right: 12px;
+    width: 286px;
+    overflow: hidden;
+    border: 1px solid #2a2a30;
+    border-radius: 14px;
+    background: #111114;
+    color: #ededef;
+    box-shadow: 0 30px 70px -20px rgb(0 0 0 / 0.65);
+    opacity: 0;
+    transform: translateY(-10px) scale(0.92);
+    transform-origin: 95% 0;
+    transition:
+      opacity 0.45s var(--ease),
+      transform 0.6s var(--ease);
+  }
+
+  .is-s1:not(.is-s3) .pop {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pop-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 10px;
+    border-bottom: 1px solid #222228;
+  }
+
+  .pop-search {
+    flex: 1;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: #1a1a1f;
+    color: #6c6c76;
+    font-size: 12px;
+    line-height: 28px;
+  }
+
+  .pop-icons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .pop-icons i {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid #6c6c76;
+    border-radius: 4px;
+  }
+
+  .pop-sec {
+    padding: 10px 12px 4px;
+    color: #74747e;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pop-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 50px;
+    margin: 0 6px;
+    padding: 0 8px;
+    border-radius: 10px;
+  }
+
+  .pop-row.is-match {
+    background: #1a1a20;
+  }
+
+  .av {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: hsl(var(--h) 70% 60% / 0.16);
+    color: hsl(var(--h) 80% 75%);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .meta {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .meta b {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  .meta small {
+    overflow: hidden;
+    color: #85858f;
+    font-size: 10.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pop-fill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgb(131 132 248 / 0.18);
+    color: #a9aaff;
+    font-size: 11px;
+    font-weight: 700;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      transform 0.2s;
+  }
+
+  .is-s2:not(.is-s3) .pop-fill {
+    animation: press 0.5s 0.5s var(--ease) both;
+  }
+
+  @keyframes press {
+    40% {
+      transform: scale(0.86);
+      background: var(--lime);
+      color: var(--lime-ink);
+    }
+    100% {
+      transform: scale(1);
+      background: var(--lime);
+      color: var(--lime-ink);
+    }
+  }
+
+  .pop-code {
+    display: inline-flex;
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pop-code :global(.gap) {
+    width: 0.35em;
+  }
+
+  .ring {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    transform: rotate(-90deg);
+  }
+
+  .ring circle {
+    fill: none;
+    stroke: #2a2a30;
+    stroke-width: 2.4;
+  }
+
+  .ring .ring-live {
+    stroke: var(--brand);
+    stroke-dasharray: calc(var(--ring) * 1px);
+    stroke-dashoffset: calc(var(--ring) * var(--t, 0) * 1px);
+  }
+
+  .cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.35));
+    opacity: 0;
+    transform: translate(470px, 400px);
+    transition:
+      transform 0.7s var(--ease-io),
+      opacity 0.35s;
+  }
+
+  .is-s1 .cursor {
+    opacity: 1;
+    transform: translate(372px, 300px);
+  }
+
+  .is-s2 .cursor {
+    transform: translate(441px, 133px);
+  }
+
+  .is-s3 .cursor {
+    opacity: 0;
+    transform: translate(330px, 330px);
+  }
+
+  @media (max-width: 900px) {
+    .handoff {
+      height: 320vh;
+    }
+
+    .handoff-sticky {
+      align-items: flex-start;
+      padding-top: 96px;
+    }
+
+    .handoff-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .handoff-steps-wrap {
+      margin-top: 22px;
+      padding-left: 0;
+    }
+
+    .rail {
+      display: none;
+    }
+
+    .handoff-steps {
+      display: grid;
+    }
+
+    .handoff-steps li {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.4s var(--ease),
+        transform 0.5s var(--ease);
+    }
+
+    .handoff-steps li.is-active {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor,
+    .pop,
+    .toast {
+      transition: none;
+    }
+
+    .is-s2:not(.is-s3) .pop-fill {
+      animation: none;
+    }
+  }
+</style>

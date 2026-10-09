@@ -1,0 +1,306 @@
+---
+// A 30-second bezel that counts down in real time. scripts/clock.ts sets --t
+// (0 → 1 over each TOTP period) on [data-clock]; everything here derives from it.
+import Odometer from './Odometer.astro';
+
+interface Props {
+  id: string;
+  secret: string;
+  label?: string;
+  variant?: 'hero' | 'mini';
+}
+
+const { id, secret, label = 'Totpy Demo', variant = 'hero' } = Astro.props;
+
+const C = 320;
+const R_TICKS = 300;
+const R_ARC = 206;
+const R_MASK = 285;
+const arcLength = 2 * Math.PI * R_ARC;
+const maskLength = 2 * Math.PI * R_MASK;
+const f = (n: number) => n.toFixed(2);
+
+const ticks = Array.from({ length: 120 }, (_, i) => {
+  const a = (i / 120) * Math.PI * 2;
+  const kind = i % 20 === 0 ? 'five' : i % 4 === 0 ? 'second' : 'minor';
+  const inner = kind === 'five' ? 266 : kind === 'second' ? 280 : 291;
+  return {
+    kind,
+    x1: f(C + R_TICKS * Math.sin(a)),
+    y1: f(C - R_TICKS * Math.cos(a)),
+    x2: f(C + inner * Math.sin(a)),
+    y2: f(C - inner * Math.cos(a)),
+  };
+});
+
+// Seconds remaining sit at 12° per second, so the arc's head points at them.
+const labels = [30, 5, 10, 15, 20, 25].map((s) => {
+  const a = ((s % 30) * 12 * Math.PI) / 180;
+  return { s, x: f(C + 238 * Math.sin(a)), y: f(C - 238 * Math.cos(a)) };
+});
+---
+
+<div
+  class={`dial dial-${variant}`}
+  data-clock
+  style={`--arc:${f(arcLength)};--mask:${f(maskLength)}`}
+>
+  <div class="dial-sweep" aria-hidden="true"></div>
+  <svg class="dial-svg" viewBox="0 0 640 640" aria-hidden="true">
+    <defs>
+      <linearGradient id={`${id}-grad`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#b3b4ff"></stop>
+        <stop offset="1" stop-color="#5b5bd6"></stop>
+      </linearGradient>
+      <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="640" height="640">
+        <circle
+          class="dial-mask"
+          cx={C}
+          cy={C}
+          r={R_MASK}
+          fill="none"
+          stroke="#fff"
+          stroke-width="48"
+          transform="rotate(-90 320 320)"
+        ></circle>
+      </mask>
+    </defs>
+
+    <circle class="dial-bezel" cx={C} cy={C} r="316"></circle>
+    <g class="ticks ticks-base">
+      {ticks.map((t) => (
+        <line class={t.kind} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />
+      ))}
+    </g>
+    <g class="ticks ticks-live" mask={`url(#${id}-mask)`}>
+      {ticks.map((t) => (
+        <line class={t.kind} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />
+      ))}
+    </g>
+    {variant === 'hero' &&
+      labels.map((l) => (
+        <text class="dial-num" x={l.x} y={l.y} text-anchor="middle" dominant-baseline="central">
+          {l.s}
+        </text>
+      ))}
+    <circle class="dial-track" cx={C} cy={C} r={R_ARC}></circle>
+    <circle
+      class="dial-arc"
+      cx={C}
+      cy={C}
+      r={R_ARC}
+      stroke={`url(#${id}-grad)`}
+      transform="rotate(-90 320 320)"
+    ></circle>
+    <circle class="dial-ripple" cx={C} cy={C} r={R_ARC}></circle>
+    <g class="dial-head">
+      <circle class="dial-head-glow" cx={C} cy={C - R_ARC} r="26"></circle>
+      <circle class="dial-head-dot" cx={C} cy={C - R_ARC} r="10"></circle>
+    </g>
+  </svg>
+
+  <div class="dial-center">
+    {variant === 'hero' && (
+      <span class="dial-tag">
+        <span class="live-dot" /> {label}
+      </span>
+    )}
+    <Odometer secret={secret} class="dial-code" />
+    {variant === 'hero' && (
+      <span class="dial-sub">
+        next key in{' '}
+        <span>
+          <span data-live-seconds>30</span>s
+        </span>
+      </span>
+    )}
+  </div>
+</div>
+
+<style>
+  .dial {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    container-type: inline-size;
+  }
+
+  .dial-svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* A radar-like sheen that trails the countdown head. */
+  .dial-sweep {
+    position: absolute;
+    inset: 3.5%;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      rgb(131 132 248 / 0.34) 0deg,
+      rgb(131 132 248 / 0.08) 50deg,
+      transparent 110deg
+    );
+    transform: rotate(calc((1 - var(--t, 0)) * 360deg));
+    mask-image: radial-gradient(circle, transparent 0 46%, #000 70%);
+  }
+
+  .dial-bezel {
+    fill: rgb(255 255 255 / 0.015);
+    stroke: rgb(255 255 255 / 0.1);
+    stroke-width: 1.5;
+  }
+
+  .ticks line {
+    stroke-linecap: round;
+  }
+
+  .ticks-base line {
+    stroke: rgb(255 255 255 / 0.09);
+    stroke-width: 2;
+  }
+
+  .ticks-live line {
+    stroke: rgb(255 255 255 / 0.32);
+    stroke-width: 2;
+  }
+
+  .ticks-live .second {
+    stroke: rgb(255 255 255 / 0.7);
+  }
+
+  .ticks-live .five,
+  .ticks-base .five {
+    stroke-width: 3.5;
+  }
+
+  .ticks-live .five {
+    stroke: var(--text);
+  }
+
+  .dial-mask {
+    stroke-dasharray: calc(var(--mask) * 1px);
+    stroke-dashoffset: calc(var(--mask) * var(--t, 0) * 1px);
+  }
+
+  .dial-num {
+    fill: var(--dim);
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .dial-track {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.05);
+    stroke-width: 14;
+  }
+
+  .dial-arc {
+    fill: none;
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-dasharray: calc(var(--arc) * 1px);
+    stroke-dashoffset: calc(var(--arc) * var(--t, 0) * 1px);
+    transition: stroke 0.6s;
+  }
+
+  .dial.is-ending .dial-arc {
+    stroke: var(--lime);
+  }
+
+  .dial-head {
+    transform-origin: 320px 320px;
+    transform: rotate(calc((1 - var(--t, 0)) * 360deg));
+  }
+
+  .dial-head-dot {
+    fill: var(--text);
+    transition: fill 0.4s;
+  }
+
+  .dial-head-glow {
+    fill: var(--brand);
+    opacity: 0.3;
+    transition: fill 0.4s;
+  }
+
+  .dial.is-ending .dial-head-dot,
+  .dial.is-ending .dial-head-glow {
+    fill: var(--lime);
+  }
+
+  .dial-ripple {
+    fill: none;
+    stroke: var(--lime);
+    stroke-width: 2;
+    opacity: 0;
+    transform-origin: 320px 320px;
+  }
+
+  .dial.is-rollover .dial-ripple {
+    animation: ripple 1.4s var(--ease);
+  }
+
+  @keyframes ripple {
+    from {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.38);
+    }
+  }
+
+  .dial-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3.2cqw;
+    pointer-events: none;
+  }
+
+  .dial-tag,
+  .dial-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: max(11px, 2.1cqw);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .dial-sub [data-live-seconds] {
+    margin-right: -0.14em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dial :global(.dial-code) {
+    font-size: 12.5cqw;
+    font-weight: 560;
+    letter-spacing: -0.02em;
+  }
+
+  .dial-mini :global(.dial-code) {
+    font-size: 15cqw;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dial-sweep {
+      display: none;
+    }
+
+    .dial.is-rollover .dial-ripple {
+      animation: none;
+    }
+  }
+</style>

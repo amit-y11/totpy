@@ -1,0 +1,162 @@
+---
+const faqs = [
+  {
+    q: 'Is Totpy really free?',
+    a: 'Yes. Every feature is free with no account limits, and the code is MIT licensed. There is no paid tier, and nothing to upgrade to.',
+  },
+  {
+    q: 'What if I forget my master password?',
+    a: 'Click “Forgot password?”, enter your recovery code and choose a new password. If you lose both, nobody can decrypt your codes, including us. Keep the backup codes websites give you when you turn on 2FA.',
+  },
+  {
+    q: 'Can anyone else see my codes?',
+    a: 'No. Totpy has no servers. Codes are generated on your device, and sync providers only store an encrypted file that only your password or recovery code can open.',
+  },
+  {
+    q: 'Is it safe to keep 2FA codes in my browser?',
+    a: 'Totpy encrypts your codes and locks itself, but it shares a device with your passwords. For your most important accounts, a hardware security key is stronger still. Our security design explains the trade-offs openly.',
+  },
+  {
+    q: 'How do I move from Google Authenticator?',
+    a: 'In Google Authenticator choose Transfer accounts → Export accounts, take a photo of the QR code, then click + → Upload QR in Totpy. All accounts come across at once.',
+  },
+  {
+    q: 'Which browsers are supported?',
+    a: 'Totpy is built and tested for Google Chrome. Other Chromium browsers should work, but Google Drive sync needs Chrome. Firefox is on the roadmap.',
+  },
+  {
+    q: 'Does it work offline?',
+    a: 'Yes. Codes are computed on your device. Only sync and the occasional clock check need a connection.',
+  },
+  {
+    q: 'Is the demo key on this page safe to scan?',
+    a: 'Yes. It’s a public demo secret that protects nothing. It exists so you can check that Totpy’s codes match your own authenticator.',
+  },
+];
+---
+
+<section class="section faq" id="faq">
+  <div class="container faq-grid">
+    <div class="faq-head">
+      <p class="eyebrow" data-reveal>
+        FAQ
+      </p>
+      <h2 class="display" data-reveal style="--d:1">
+        Questions, <span class="serif">answered.</span>
+      </h2>
+    </div>
+    <div class="faq-list">
+      {faqs.map((item, i) => (
+        <details data-reveal style={`--d:${i % 2}`}>
+          <summary>
+            <span>{item.q}</span>
+            <span class="plus" aria-hidden="true" />
+          </summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--line);
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 64px;
+  }
+
+  .faq-head {
+    display: grid;
+    align-content: start;
+    gap: 22px;
+  }
+
+  .faq-list {
+    border-top: 1px solid var(--line-strong);
+  }
+
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.2s;
+  }
+
+  summary:hover {
+    color: var(--lime);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .plus {
+    position: relative;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    transition:
+      transform 0.4s var(--ease),
+      background 0.3s,
+      border-color 0.3s;
+  }
+
+  .plus::before,
+  .plus::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 1.5px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+
+  .plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  details[open] .plus {
+    border-color: var(--lime);
+    background: var(--lime);
+    color: var(--lime-ink);
+    transform: rotate(45deg);
+  }
+
+  details p {
+    max-width: 640px;
+    padding: 0 48px 28px 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  @media (max-width: 900px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    summary {
+      font-size: 18px;
+    }
+  }
+</style>

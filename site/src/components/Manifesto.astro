@@ -1,0 +1,95 @@
+---
+const lines = ['Create an account.', 'Reach for your phone.', 'Pay every month.', 'Get tracked.'];
+---
+
+<section class="section manifesto">
+  <div class="container">
+    <p class="eyebrow" data-reveal>
+      What Totpy never asks of you
+    </p>
+    <ul class="strikes" data-reveal>
+      {lines.map((line, i) => (
+        <li style={`--i:${i}`}>
+          <span>{line}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="answer" data-reveal style="--d:4">
+      Just <span class="serif">your codes.</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    overflow: hidden;
+    background:
+      radial-gradient(50% 60% at 85% 100%, rgb(201 246 95 / 0.08), transparent 70%), var(--ink);
+  }
+
+  .strikes {
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .strikes li {
+    font-size: clamp(44px, 7.4vw, 112px);
+    font-weight: 680;
+    letter-spacing: -0.05em;
+    line-height: 1.02;
+  }
+
+  .strikes span {
+    position: relative;
+    display: inline-block;
+    color: var(--text);
+    transition: color 0.8s var(--ease);
+    transition-delay: calc(0.3s + var(--i) * 0.22s);
+  }
+
+  .strikes span::after {
+    content: '';
+    position: absolute;
+    left: -0.04em;
+    right: -0.04em;
+    top: 54%;
+    height: 0.075em;
+    border-radius: 0.04em;
+    background: var(--lime);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s var(--ease-io);
+    transition-delay: calc(0.2s + var(--i) * 0.22s);
+  }
+
+  html:not(.js) .strikes span,
+  .strikes.is-in span {
+    color: #3a3a44;
+  }
+
+  html:not(.js) .strikes span::after,
+  .strikes.is-in span::after {
+    transform: scaleX(1);
+  }
+
+  .answer {
+    margin-top: 36px;
+    font-size: clamp(44px, 7.4vw, 112px);
+    font-weight: 680;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .answer .serif {
+    color: var(--lime);
+    font-size: 1.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .strikes span,
+    .strikes span::after {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+// Six rolling digits. scripts/clock.ts sets --d on each strip to the live code.
+interface Props {
+  secret: string;
+  class?: string;
+}
+
+const { secret, class: className } = Astro.props;
+const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+---
+
+<span class:list={['odo', 'no-anim', className]} data-odo data-code={secret} aria-hidden="true">
+  {[0, 1, 2, 3, 4, 5].map((i) => (
+    <Fragment>
+      {i === 3 && <span class="odo-gap" />}
+      <span class="odo-d">
+        <span class="odo-strip" style={`--i:${i}`}>
+          {numbers.map((n) => (
+            <span>{n}</span>
+          ))}
+        </span>
+      </span>
+    </Fragment>
+  ))}
+</span>
