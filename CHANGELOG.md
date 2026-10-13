@@ -6,6 +6,11 @@ All notable changes to Totpy are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- A README FAQ entry on the security trade-off of keeping 2FA codes in the browser, and when
+  to use a security key or phone authenticator instead
+
 ### Changed
 
 - The website and README link to Totpy on the Chrome Web Store
