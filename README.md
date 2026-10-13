@@ -171,6 +171,27 @@ Use the backup codes each website gave you to get back into those accounts.
 </details>
 
 <details>
+<summary><strong>Isn't keeping 2FA codes in the browser less secure?</strong></summary>
+
+It's a trade-off. 2FA codes are a second factor, and keeping them on the same computer as your
+passwords means malware or an unlocked browser profile exposes both. Totpy keeps the boundaries
+it can:
+
+- The vault is always encrypted, with its own master password, separate from Chrome's password
+  manager. Don't save that password in Chrome.
+- Stolen sync data or backup files are useless without your master password or recovery code.
+- It auto-locks, and locks when Chrome closes.
+- It can't read or change any page until you click **Fill** or **Insert**.
+
+No authenticator app, on a phone or in the browser, stops a fake login page from asking for your
+password and code at the same time. Security keys and passkeys do, because they only work on the
+real site. For your most important accounts, like email and banking, use a security key or a phone
+authenticator, and use Totpy for the many sites that only offer codes. See the
+[threat model](docs/security.md#threat-model).
+
+</details>
+
+<details>
 <summary><strong>Can I use it on my phone?</strong></summary>
 
 Not yet. Chrome on phones doesn't run extensions. When you set up 2FA, you can scan the same QR
