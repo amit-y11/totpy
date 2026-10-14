@@ -25,9 +25,16 @@ const IMPORT = [
   'otpauth://totp/Stripe:me%40example.com?secret=ONSWG4TFORZWK4TF&issuer=Stripe&digits=8',
 ].join('\n');
 
-/** Waits until a code is not about to roll over, so the page and the test agree. */
+/**
+ * Waits until a code is not about to roll over and has not just rolled over, so the page has
+ * shown the current code and the test agrees with it.
+ */
 async function steadyClock(): Promise<void> {
-  while (secondsRemaining(30) < 4) await new Promise((r) => setTimeout(r, 250));
+  const settled = () => {
+    const left = secondsRemaining(30);
+    return left >= 4 && left <= 28;
+  };
+  while (!settled()) await new Promise((r) => setTimeout(r, 250));
 }
 
 function codeFor(page: Page, issuer: string): Promise<string> {
