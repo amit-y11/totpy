@@ -90,6 +90,8 @@ describe('popup', () => {
     assert.equal(await page.$eval(continueButton, (b) => (b as HTMLButtonElement).disabled), true);
     await page.click('#recovery-ack');
     await page.click(continueButton);
+    await waitForView(page, 'passkey');
+    await page.click('#passkey-skip');
     await waitForView(page, 'list');
     assert.equal(await page.$eval('#empty', (el) => (el as HTMLElement).hidden), false);
 

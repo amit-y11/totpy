@@ -59,6 +59,23 @@
       <button id="recovery-done" class="primary" type="button" disabled>Continue</button>
     </section>
 
+    <section id="view-passkey" class="view pad" hidden>
+      <div class="hero">
+        <h1>Unlock with a passkey?</h1>
+        <p class="muted">
+          Use Touch ID, Windows Hello or your phone instead of typing your master password on this
+          device. Your master password keeps working. You can change this later in Settings.
+        </p>
+      </div>
+      <form id="passkey-form" class="stack">
+        <p class="error" role="alert"></p>
+        <button class="primary passkey-button" type="submit">
+          <i data-icon="key"></i> Set up passkey
+        </button>
+      </form>
+      <button id="passkey-skip" class="link center-text" type="button">Skip for now</button>
+    </section>
+
     <section id="view-restore" class="view pad" hidden>
       <div class="hero">
         <img src="../icons/icon-128.png" alt="" width="44" height="44" />
@@ -97,6 +114,9 @@
         />
         <p class="error" role="alert"></p>
         <button class="primary" type="submit">Unlock</button>
+        <button id="unlock-passkey" class="passkey-button" type="button" hidden>
+          <i data-icon="key"></i> Unlock with passkey
+        </button>
       </form>
       <button id="unlock-forgot" class="link center-text" type="button">Forgot password?</button>
     </section>

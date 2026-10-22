@@ -4,7 +4,8 @@
 // AES-256-GCM under a key derived from that secret (HKDF). The secret itself
 // is stored twice, wrapped by keys derived (PBKDF2-SHA256) from:
 //   - the master password, and
-//   - the recovery code.
+//   - the recovery code,
+// and optionally, on one device only, by a key derived from a passkey (PRF).
 // Changing the password only re-wraps the secret, so every device keeps
 // decrypting the same data. The wraps are authenticated with an HMAC keyed
 // from the secret, so a tampered sync copy cannot swap in wraps that would
@@ -14,7 +15,15 @@
 // automatic copies and exported backup files.
 
 import { base32Encode, normalizeBase32 } from './base32.ts';
-import type { Bytes, Envelope, KdfParams, VaultData, VaultKeys, Wrap } from './types.ts';
+import type {
+  Bytes,
+  Envelope,
+  KdfParams,
+  PasskeyWrap,
+  VaultData,
+  VaultKeys,
+  Wrap,
+} from './types.ts';
 
 export const FORMAT = 'otp-vault';
 export const FORMAT_VERSION = 2;
@@ -211,6 +220,74 @@ export async function unwrapSecret(
     throw new DecryptError(
       purpose === 'recovery' ? 'Incorrect recovery code' : 'Incorrect password',
     );
+  }
+}
+
+// ---- Passkey wraps ----------------------------------------------------------
+//
+// A passkey's PRF output is 32 uniformly random bytes, so HKDF is enough to
+// turn it into a wrapping key; no password-style stretching is needed.
+
+/** Input to the passkey's PRF. Random per registration. */
+export const newPrfSalt = (): Bytes => randomBytes(32);
+
+async function prfWrappingKey(prfOutput: Bytes): Promise<CryptoKey> {
+  const base = await crypto.subtle.importKey('raw', prfOutput, 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new Uint8Array(32),
+      info: encoder.encode(`${FORMAT} passkey`),
+    },
+    base,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt'],
+  );
+}
+
+function passkeyAad(keyId: string, credentialId: string): Bytes {
+  return encoder.encode(`${FORMAT}:wrap:passkey:${keyId}:${credentialId}`);
+}
+
+export async function wrapWithPasskey(
+  secret: Bytes,
+  keyId: string,
+  credentialId: string,
+  prfSalt: Bytes,
+  prfOutput: Bytes,
+): Promise<PasskeyWrap> {
+  const iv = randomBytes(12);
+  const ct = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv, additionalData: passkeyAad(keyId, credentialId) },
+    await prfWrappingKey(prfOutput),
+    secret,
+  );
+  return {
+    keyId,
+    credentialId,
+    prfSalt: toBase64(prfSalt),
+    iv: toBase64(iv),
+    ct: toBase64(ct),
+    createdAt: Date.now(),
+  };
+}
+
+export async function unwrapWithPasskey(wrap: PasskeyWrap, prfOutput: Bytes): Promise<Bytes> {
+  try {
+    const secret = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: fromBase64(wrap.iv),
+        additionalData: passkeyAad(wrap.keyId, wrap.credentialId),
+      },
+      await prfWrappingKey(prfOutput),
+      fromBase64(wrap.ct),
+    );
+    return new Uint8Array(secret);
+  } catch {
+    throw new DecryptError('This passkey cannot unlock the vault');
   }
 }
 

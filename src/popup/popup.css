@@ -299,7 +299,8 @@ body {
 }
 
 #import-tools button svg,
-#import-tools .button svg {
+#import-tools .button svg,
+.passkey-button svg {
   width: 15px;
   height: 15px;
 }

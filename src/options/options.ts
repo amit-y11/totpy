@@ -2,6 +2,7 @@ import { describeBackups, restoreBackup } from '../lib/backups.ts';
 import { normalizeBase32 } from '../lib/base32.ts';
 import { DecryptError, openVault, validateEnvelope } from '../lib/crypto.ts';
 import { buildOtpauthUri, parseAccountLinks } from '../lib/otpauth.ts';
+import { enablePasskey, getPasskeyWrap, passkeysSupported, removePasskey } from '../lib/passkey.ts';
 import { getProvider, providers } from '../lib/providers/index.ts';
 import {
   changePassword,
@@ -81,7 +82,7 @@ async function init(): Promise<void> {
 async function renderMain(): Promise<void> {
   const settings = await getSettings();
   $<HTMLSelectElement>('#auto-lock').value = String(settings.autoLockMinutes);
-  await Promise.all([renderProviders(), renderBackups()]);
+  await Promise.all([renderProviders(), renderBackups(), renderPasskey()]);
 }
 
 function passwordPair(form: HTMLFormElement): string {
@@ -312,6 +313,42 @@ $<HTMLSelectElement>('#auto-lock').addEventListener('change', async (event) => {
 $('#lock-now').addEventListener('click', async () => {
   await lock();
   show('unlock');
+});
+
+// ---- Passkey ----------------------------------------------------------------
+
+async function renderPasskey(): Promise<void> {
+  const [wrap, supported] = await Promise.all([getPasskeyWrap(), passkeysSupported()]);
+  const status = $('#passkey-status');
+  status.hidden = !wrap && supported;
+  status.textContent = wrap
+    ? `On since ${new Date(wrap.createdAt).toLocaleDateString()}.`
+    : 'This browser does not support passkeys that can unlock Totpy.';
+  $('#passkey-form').hidden = Boolean(wrap) || !supported;
+  $('#passkey-remove').hidden = !wrap;
+}
+
+onSubmit($<HTMLFormElement>('#passkey-form'), async (form) => {
+  try {
+    await enablePasskey(fieldValue(form, 'password'));
+  } catch (err) {
+    if (err instanceof DecryptError) throw new Error('Incorrect password');
+    if (err instanceof DOMException && err.name === 'NotAllowedError') {
+      throw new Error('Passkey setup was cancelled');
+    }
+    throw err;
+  }
+  form.reset();
+  await renderPasskey();
+  toast('Passkey unlock is on');
+});
+
+$('#passkey-remove').addEventListener('click', async () => {
+  await removePasskey();
+  await renderPasskey();
+  toast('Passkey unlock is off. You can delete the passkey from your password manager.', {
+    duration: 3500,
+  });
 });
 
 onSubmit($<HTMLFormElement>('#password-form'), async (form) => {

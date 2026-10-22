@@ -3,6 +3,12 @@ import { DRIFT_WARNING_MS, checkClock, describeOffset } from '../lib/clock.ts';
 import { displayHost, matchEntries } from '../lib/match.ts';
 import { parseAccountLinks, validateEntryFields } from '../lib/otpauth.ts';
 import { fillCode } from '../lib/page.ts';
+import {
+  enablePasskeyAfterSetup,
+  getPasskeyWrap,
+  passkeysSupported,
+  unlockWithPasskey,
+} from '../lib/passkey.ts';
 import chromeSync from '../lib/providers/chrome-sync.ts';
 import {
   createVault,
@@ -33,6 +39,7 @@ import {
 import {
   $,
   $$,
+  busy,
   download,
   errorMessage,
   field,
@@ -52,6 +59,7 @@ const VIEWS = [
   'loading',
   'setup',
   'recovery',
+  'passkey',
   'restore',
   'unlock',
   'recover',
@@ -95,7 +103,7 @@ async function init(): Promise<void> {
     return;
   }
   if (!(await getSession())) {
-    show('unlock');
+    await showUnlock({ prompt: true });
     return;
   }
   await openList();
@@ -151,18 +159,75 @@ $<HTMLInputElement>('#recovery-ack').addEventListener('change', (event) => {
 
 $('#recovery-done').addEventListener('click', async () => {
   $('#recovery-code').textContent = '';
-  await openList();
+  await offerPasskey();
 });
+
+/** Last onboarding step: offers passkey unlock where the browser supports it. */
+async function offerPasskey(): Promise<void> {
+  if (!(await passkeysSupported())) {
+    await openList();
+    return;
+  }
+  setError($<HTMLFormElement>('#passkey-form'));
+  show('passkey');
+}
+
+onSubmit($<HTMLFormElement>('#passkey-form'), async () => {
+  try {
+    await enablePasskeyAfterSetup();
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'NotAllowedError') {
+      throw new Error('Passkey setup was cancelled. Try again or skip for now.');
+    }
+    throw err;
+  }
+  await openList();
+  toast('Passkey unlock is on');
+});
+
+$('#passkey-skip').addEventListener('click', () => void openList());
 
 $('#setup-drive').addEventListener('click', () => chrome.runtime.openOptionsPage());
 
 onSubmit($<HTMLFormElement>('#restore-form'), async (form) => {
   await restoreFromProvider('chrome-sync', fieldValue(form, 'password'));
   form.reset();
-  await openList();
+  await offerPasskey();
 });
 
 $('#restore-skip').addEventListener('click', () => show('setup'));
+
+/** Shows the unlock view; with `prompt`, asks for the passkey straight away. */
+async function showUnlock({ prompt = false } = {}): Promise<void> {
+  const hasPasskey = (await getPasskeyWrap()) !== null;
+  $('#unlock-passkey').hidden = !hasPasskey;
+  show('unlock');
+  if (hasPasskey && prompt) await passkeyUnlock();
+}
+
+async function passkeyUnlock(): Promise<void> {
+  const form = $<HTMLFormElement>('#unlock-form');
+  const button = $<HTMLButtonElement>('#unlock-passkey');
+  button.disabled = true;
+  try {
+    await busy(form, async () => {
+      try {
+        await unlockWithPasskey();
+      } catch (err) {
+        // Cancelled or timed out: leave the password field to the user.
+        if (err instanceof DOMException && err.name === 'NotAllowedError') return;
+        throw err;
+      }
+      form.reset();
+      await openList();
+      void requestBackgroundSync();
+    });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$('#unlock-passkey').addEventListener('click', () => void passkeyUnlock());
 
 onSubmit($<HTMLFormElement>('#unlock-form'), async (form) => {
   try {
@@ -443,7 +508,7 @@ $('#btn-settings').addEventListener('click', () => chrome.runtime.openOptionsPag
 $('#btn-lock').addEventListener('click', async () => {
   await lock();
   clearInterval(ticker);
-  show('unlock');
+  await showUnlock();
 });
 
 // ---- Add / edit -----------------------------------------------------------
@@ -587,7 +652,7 @@ $('#btn-delete').addEventListener('click', async () => {
 chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === 'session' && changes.vaultKey && !changes.vaultKey.newValue) {
     clearInterval(ticker);
-    if (isVisible('list') || isVisible('edit')) show('unlock');
+    if (isVisible('list') || isVisible('edit')) await showUnlock();
     return;
   }
   if (area !== 'local' || !isVisible('list')) return;

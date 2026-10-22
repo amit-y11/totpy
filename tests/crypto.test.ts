@@ -8,8 +8,11 @@ import {
   generateRecoveryCode,
   newVaultSecret,
   openVault,
+  newPrfSalt,
   sealKeys,
+  unwrapWithPasskey,
   wrapSecret,
+  wrapWithPasskey,
 } from '../src/lib/crypto.ts';
 
 const data: VaultData = {
@@ -57,6 +60,21 @@ test('wrong password or recovery code fails', async () => {
   const { env } = await makeVault();
   await assert.rejects(openVault(env, { password: 'wrong' }), DecryptError);
   await assert.rejects(openVault(env, { recoveryCode: generateRecoveryCode() }), DecryptError);
+});
+
+test('a passkey wrap opens with the same PRF output only', async () => {
+  const { secret, keyId } = newVaultSecret();
+  const output = crypto.getRandomValues(new Uint8Array(32));
+  const wrap = await wrapWithPasskey(secret, keyId, 'cred-1', newPrfSalt(), output);
+  assert.deepEqual(await unwrapWithPasskey(wrap, output), secret);
+  const other = crypto.getRandomValues(new Uint8Array(32));
+  await assert.rejects(unwrapWithPasskey(wrap, other), DecryptError);
+  // The wrap is bound to its vault and credential.
+  await assert.rejects(unwrapWithPasskey({ ...wrap, keyId: 'other' }, output), DecryptError);
+  await assert.rejects(
+    unwrapWithPasskey({ ...wrap, credentialId: 'cred-2' }, output),
+    DecryptError,
+  );
 });
 
 test('swapping in wraps from another vault is detected', async () => {

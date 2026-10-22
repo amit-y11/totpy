@@ -8,6 +8,11 @@ All notable changes to Totpy are documented here. The format follows
 
 ### Added
 
+- Unlock with a passkey (Touch ID, Windows Hello, your phone or a security key) instead of
+  typing the master password. It's offered after creating or restoring a vault and can be
+  turned on or off in Settings. It works on that device only and needs a passkey provider
+  that supports the WebAuthn PRF extension.
+
 - A README FAQ entry on the security trade-off of keeping 2FA codes in the browser, and when
   to use a security key or phone authenticator instead
 

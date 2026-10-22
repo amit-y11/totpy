@@ -153,6 +153,28 @@
               <button class="primary self-start" type="submit">Change password</button>
             </form>
           </details>
+          <details class="item block">
+            <summary class="item-title">Unlock with passkey</summary>
+            <div class="stack">
+              <p class="hint">
+                Unlock on this device with Touch ID, Windows Hello, your phone or a security key
+                instead of typing your master password. Your master password keeps working and is
+                still needed on other devices.
+              </p>
+              <p id="passkey-status" class="hint" hidden></p>
+              <form id="passkey-form" class="stack">
+                <label
+                  >Master password
+                  <input type="password" name="password" autocomplete="current-password" required
+                /></label>
+                <p class="error" role="alert"></p>
+                <button class="primary self-start" type="submit">Set up passkey</button>
+              </form>
+              <button id="passkey-remove" class="danger self-start" type="button" hidden>
+                Turn off
+              </button>
+            </div>
+          </details>
           <div class="item block">
             <div class="row">
               <div class="spacer">

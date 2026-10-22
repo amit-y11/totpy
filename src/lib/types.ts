@@ -43,6 +43,21 @@ export interface Wrap {
   ct: string;
 }
 
+/**
+ * The vault secret, encrypted with a key derived from a passkey's PRF output.
+ * Kept only on the device that registered the passkey, never synced.
+ */
+export interface PasskeyWrap {
+  keyId: string;
+  /** Base64 WebAuthn credential id. */
+  credentialId: string;
+  /** Base64. Input to the passkey's PRF. */
+  prfSalt: string;
+  iv: string;
+  ct: string;
+  createdAt: number;
+}
+
 export interface VaultKeys {
   password: Wrap;
   recovery: Wrap | null;

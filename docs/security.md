@@ -33,8 +33,10 @@ This document describes how Totpy protects your 2FA secrets. To report a vulnera
 | Recovery wrap   | PBKDF2-SHA-256, 100,000 iterations (the code itself has 160 bits of entropy)  |
 | Wrap integrity  | HMAC-SHA-256 over both wraps and their timestamp, keyed from the vault secret |
 | Recovery code   | 20 random bytes, shown as 32 base32 characters in groups of four              |
+| Passkey wrap    | HKDF-SHA-256 from the passkey's WebAuthn PRF output, then AES-256-GCM         |
 
-The vault secret is wrapped twice, once per credential. Changing the password re-wraps the same
+The vault secret is wrapped twice, once per credential, plus once per device that turns on passkey
+unlock (see below). Changing the password re-wraps the same
 secret, so the data and every synced copy stay readable on all devices.
 
 ## Envelope format
@@ -76,6 +78,28 @@ Copies are matched by `keyId`:
 - **Different vault** (created separately): the user must enter that vault's password to join
   it. Totpy never merges silently across vaults.
 
+## Passkey unlock
+
+Passkey unlock is optional and per device. It only replaces typing the master password on the
+device where it was set up.
+
+- Turning it on requires the master password, so someone using an already unlocked browser
+  can't add their own passkey.
+- Totpy creates a passkey (user verification required) with the WebAuthn `prf` extension and a
+  random 32-byte PRF input. The authenticator turns that input into 32 secret bytes, which are
+  only released after Touch ID, Windows Hello, a PIN or similar.
+- Those bytes go through HKDF-SHA-256 to an AES-256-GCM key that wraps the vault secret. The
+  associated data binds the `keyId` and the credential id.
+- The wrap is stored in `chrome.storage.local` only. It is not part of the envelope, so it never
+  reaches sync providers, automatic copies or backup files, and older versions of Totpy are
+  unaffected.
+- After unwrapping, the secret must decrypt the vault (including its HMAC) before Totpy treats
+  itself as unlocked. A wrap for a vault this device no longer uses is ignored.
+- Passkeys without PRF support are refused. Totpy never stores the vault secret in a form that
+  only needs a "user verified" flag.
+- Turning it off deletes the wrap. The passkey itself stays in the password manager until the
+  user deletes it, but without the wrap it can't open anything.
+
 ## Unlocked state
 
 - The master password is never stored.
@@ -98,7 +122,8 @@ Totpy protects against:
 
 - Theft of sync data or backup files (attacker needs the master password or recovery code)
 - A malicious or compromised sync provider tampering with the vault
-- Someone using your computer while Totpy is locked
+- Someone using your computer while Totpy is locked, including with passkey unlock on, as long
+  as they can't pass the passkey's user verification
 
 Totpy does not protect against:
 
