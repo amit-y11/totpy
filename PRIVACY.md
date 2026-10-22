@@ -1,12 +1,17 @@
 # Privacy Policy
 
-_Last updated: October 8, 2026_
+_Last updated: October 22, 2026_
 
 Totpy does not collect, transmit or sell any personal data. It has no analytics
 and no servers.
 
 - **Your 2FA secrets** are encrypted on your device with your master password and stored in
   your browser's extension storage.
+- **Passkey unlock (optional):** if you set it up, your browser and passkey provider (such as
+  Google Password Manager or iCloud Keychain) store the passkey. Totpy keeps a copy of the
+  vault key, encrypted with a secret only that passkey can produce, in local extension storage
+  on that device. It is never synced or sent anywhere, and Totpy receives nothing about you
+  from the passkey.
 - **Chrome sync (optional):** if enabled, the encrypted vault is stored in your Chrome
   profile's sync storage, which Google syncs between your signed-in browsers. Google receives
   only ciphertext.

@@ -77,6 +77,7 @@ in the browser, where you actually need them, without giving up on security:
 
 - AES-256-GCM encryption, PBKDF2 key derivation with 600,000 iterations
 - A **recovery code** to reset your password if you forget it
+- Optional **passkey unlock** with Touch ID, Windows Hello, your phone or a security key
 - Auto-lock, and locks when Chrome closes
 - No access to websites until you click Fill or Insert (`activeTab`)
 
@@ -114,7 +115,8 @@ newer.
 ## Getting started
 
 1. **Create a master password.** Totpy then shows your **recovery code** once. Save it somewhere
-   outside the browser; it is the only way back in if you forget the password.
+   outside the browser; it is the only way back in if you forget the password. Then choose
+   whether to unlock with a **passkey** on this device, or skip it for now.
 2. **Add an account.** On a site's 2FA setup page, open Totpy, click **+** and choose **Scan QR on
    page**. You can also upload a QR image, paste a link or type the setup key.
 3. **Sign in.** When a site asks for a code, open Totpy and click **Fill**, or right-click the
@@ -149,6 +151,10 @@ Totpy encrypts your vault with a random 256-bit key. That key is locked twice, b
 password and by your recovery code, so you can change the password without re-encrypting
 anything and every synced device keeps working. Synced copies are authenticated, so a tampered
 copy can't lock you out or weaken the encryption.
+
+Passkey unlock is optional and works only on the device where you set it up. It uses your
+passkey's WebAuthn PRF output to lock a third copy of the key, which stays in that browser and is
+never synced.
 
 Read the full design in **[docs/security.md](docs/security.md)**. To report a vulnerability,
 see **[SECURITY.md](SECURITY.md)**. Please don't open a public issue.

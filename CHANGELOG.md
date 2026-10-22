@@ -6,13 +6,14 @@ All notable changes to Totpy are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-22
+
 ### Added
 
 - Unlock with a passkey (Touch ID, Windows Hello, your phone or a security key) instead of
   typing the master password. It's offered after creating or restoring a vault and can be
   turned on or off in Settings. It works on that device only and needs a passkey provider
   that supports the WebAuthn PRF extension.
-
 - A README FAQ entry on the security trade-off of keeping 2FA codes in the browser, and when
   to use a security key or phone authenticator instead
 
@@ -51,6 +52,7 @@ First public release.
 - Auto-lock and a clock-drift warning
 - Light and dark themes
 
-[Unreleased]: https://github.com/amit-y11/totpy/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/amit-y11/totpy/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/amit-y11/totpy/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/amit-y11/totpy/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/amit-y11/totpy/releases/tag/v1.0.0
