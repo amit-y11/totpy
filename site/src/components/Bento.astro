@@ -167,6 +167,51 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
         </div>
       </article>
 
+      <!-- I: passkey unlock -->
+      <article class="card i" data-reveal style="--d:1">
+        <div class="card-copy">
+          <h3>Unlock with a touch.</h3>
+          <p>
+            Use Touch ID, Windows Hello or a security key instead of typing your master password.
+            Optional, and only on your device.
+          </p>
+        </div>
+        <div class="demo demo-passkey" aria-hidden="true">
+          <div class="touch">
+            <svg viewBox="0 0 64 64" class="touch-ring">
+              <circle class="track" cx="32" cy="32" r="29"></circle>
+              <circle class="sweep" cx="32" cy="32" r="29" pathLength="100"></circle>
+            </svg>
+            <svg
+              viewBox="0 0 24 24"
+              class="finger"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path>
+              <path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path>
+              <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path>
+              <path d="M2 12a10 10 0 0 1 18-6"></path>
+              <path d="M2 16h.01"></path>
+              <path d="M21.8 16c.2-2 .131-5.354 0-6"></path>
+              <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path>
+              <path d="M8.65 22c.21-.66.45-1.32.57-2"></path>
+              <path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path>
+            </svg>
+          </div>
+          <div class="touch-copy">
+            <span class="touch-title">Unlock Totpy</span>
+            <span class="touch-status mono">
+              <span class="ts ts-wait">Touch ID to continue</span>
+              <span class="ts ts-ok">Unlocked ✓</span>
+            </span>
+          </div>
+        </div>
+      </article>
+
       <!-- F: copies -->
       <article class="card f" data-reveal>
         <div class="card-copy">
@@ -223,7 +268,8 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
     grid-template-areas:
       'a a b c'
       'a a d e'
-      'f g h h';
+      'i i f g'
+      'h h h h';
     gap: 16px;
   }
 
@@ -250,6 +296,9 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
   }
   .h {
     grid-area: h;
+  }
+  .i {
+    grid-area: i;
   }
 
   .card {
@@ -1003,10 +1052,123 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
     }
   }
 
+  /* I — passkey unlock (5s loop) */
+
+  .demo-passkey {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .touch {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+  }
+
+  .touch-ring {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .touch-ring circle {
+    fill: none;
+    stroke-width: 3;
+  }
+
+  .touch-ring .track {
+    fill: var(--ink);
+    stroke: var(--line-strong);
+  }
+
+  .touch-ring .sweep {
+    stroke: var(--brand);
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    stroke-linecap: round;
+    animation: sweep 5s var(--ease-io) infinite;
+  }
+
+  .finger {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    color: var(--muted);
+    animation: finger 5s infinite;
+  }
+
+  @keyframes sweep {
+    0%,
+    15% {
+      stroke-dashoffset: 100;
+      stroke: var(--brand);
+    }
+    50% {
+      stroke-dashoffset: 0;
+      stroke: var(--brand);
+    }
+    56%,
+    100% {
+      stroke-dashoffset: 0;
+      stroke: var(--lime);
+    }
+  }
+
+  @keyframes finger {
+    0%,
+    12% {
+      color: var(--muted);
+    }
+    20%,
+    50% {
+      color: var(--brand);
+    }
+    56%,
+    100% {
+      color: var(--lime);
+    }
+  }
+
+  .touch-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .touch-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .touch-status {
+    display: grid;
+    font-size: 13.5px;
+  }
+
+  .ts {
+    grid-area: 1 / 1;
+  }
+
+  .ts-wait {
+    color: var(--muted);
+    animation: st-off 5s infinite;
+  }
+
+  .ts-ok {
+    color: var(--lime);
+    opacity: 0;
+    animation: st-ok 5s infinite;
+  }
+
   /* H — free */
 
   .h {
     justify-content: center;
+    min-height: 0;
     background:
       radial-gradient(80% 120% at 0% 100%, rgb(201 246 95 / 0.12), transparent 60%),
       linear-gradient(180deg, var(--panel), var(--ink-2));
@@ -1035,6 +1197,7 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
         'a a'
         'b c'
         'd e'
+        'i i'
         'f g'
         'h h';
     }
@@ -1043,7 +1206,7 @@ const imported = ['GitHub', 'Google', 'AWS', 'Discord', 'Proton'];
   @media (max-width: 640px) {
     .bento {
       grid-template-columns: 1fr;
-      grid-template-areas: 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h';
+      grid-template-areas: 'a' 'b' 'c' 'd' 'e' 'i' 'f' 'g' 'h';
     }
 
     .free {
