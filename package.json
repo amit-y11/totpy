@@ -47,16 +47,16 @@
     "jsqr": "1.4.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.2.3",
-    "@commitlint/config-conventional": "21.2.3",
-    "@types/chrome": "0.3.4",
-    "@types/node": "24.19.1",
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@types/chrome": "0.3.6",
+    "@types/node": "24.19.2",
     "esbuild": "0.28.2",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
-    "prettier": "3.9.9",
-    "prettier-plugin-astro": "1.1.1",
-    "puppeteer-core": "25.13.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "puppeteer-core": "25.16.0",
     "typescript": "7.0.2"
   }
 }
