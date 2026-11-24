@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -26,7 +28,28 @@ jobs:
             exit 1
           fi
       - run: npm run package
+      # The notes are this version's CHANGELOG section, with wrapped list items
+      # joined so GitHub doesn't render the line breaks.
+      - name: Write release notes from the CHANGELOG
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^  [^ ]/ && prev ~ /^- / { sub(/^ +/, ""); prev = prev " " $0; next }
+            found { if (started) print prev; prev = $0; started = 1 }
+            END { if (started) print prev }
+          ' CHANGELOG.md > notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "CHANGELOG.md has no section for $version"
+            exit 1
+          fi
+          previous=$(git describe --tags --abbrev=0 "$GITHUB_REF_NAME^" 2>/dev/null || true)
+          if [ -n "$previous" ]; then
+            printf '\n**Full changelog:** %s/compare/%s...%s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" "$previous" "$GITHUB_REF_NAME" >> notes.md
+          fi
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release/*.zip --title "Totpy $GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" release/*.zip --title "Totpy $GITHUB_REF_NAME" --notes-file notes.md
