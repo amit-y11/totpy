@@ -11,17 +11,17 @@
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
-    "@astrojs/sitemap": "3.7.5",
+    "@astrojs/sitemap": "3.7.6",
     "@fontsource-variable/bricolage-grotesque": "5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.3.0",
     "@fontsource/instrument-serif": "5.3.0",
-    "astro": "7.4.12"
+    "astro": "7.4.13"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@types/qrcode": "1.5.6",
     "qrcode": "1.5.4",
     "typescript": "6.0.3",
-    "wrangler": "4.162.0"
+    "wrangler": "4.166.0"
   }
 }
